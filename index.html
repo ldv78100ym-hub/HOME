@@ -126,7 +126,6 @@
         <h1>📑 Liste de Liens Catégorisés</h1>
         
         
-
         <p>Aperçu des liens triés par catégorie :</p>
         
         <div id="links-display">
@@ -142,7 +141,8 @@
             { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
-            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" }
+            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" },
+            { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" }
         ];
 
         // 2. Fonction pour regrouper les liens par catégorie
@@ -162,6 +162,7 @@
             const container = document.getElementById('links-display');
             container.innerHTML = ''; // Nettoyer l'ancien contenu
 
+            // On parcourt les catégories
             for (const category in groupedLinks) {
                 // Créer la section pour la catégorie
                 const section = document.createElement('div');
@@ -182,8 +183,15 @@
 
                     const icon = document.createElement('span');
                     icon.classList.add('icon');
-                    // Utiliser une icône pour différencier les catégories (simple pour l'exemple)
-                    icon.textContent = (category === "Algèbre") ? '➗' : '📈'; 
+                    
+                    // Choix de l'icône selon la catégorie
+                    if (category === "Algèbre") {
+                        icon.textContent = '➗';
+                    } else if (category === "Géométrie") {
+                        icon.textContent = '📐';
+                    } else {
+                        icon.textContent = '📈';
+                    }
 
                     const anchor = document.createElement('a');
                     anchor.href = link.url;
@@ -244,4 +252,3 @@
 
 </body>
 </html>
-
