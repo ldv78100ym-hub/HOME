@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste de Liens de Cours</title>
+    
+    <style>
+        /* CSS AMÉLIORÉ */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --bg-light: #f8f9fa;
+            --text-dark: #343a40;
+            --border-light: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .link-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            background-color: #ffffff;
+        }
+
+        .link-item:hover {
+            background-color: #e9f7ff;
+            border-color: #b3d9ff;
+            transform: translateY(-2px);
+        }
+
+        .link-icon {
+            /* Style de l'icône verte (représentant le dossier/lien) */
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: var(--success-color);
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+        .link-item a {
+            text-decoration: none;
+            color: var(--text-dark); /* Couleur du texte par défaut */
+            font-weight: 600;
+            flex-grow: 1;
+            font-size: 1.1em;
+        }
+
+        .link-item a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Style pour le chemin du dossier */
+        .path-prefix {
+            color: var(--secondary-color);
+            font-weight: normal;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+	
+	<center>Auteur : Yann Merdy (yann.merdy@gmail.com)</center>
+        <h1>Liens de Cours</h1>
+        <p>Cliquez sur l'un des liens ci-dessous pour ouvrir le contenu dans un nouvel onglet.</p>
+
+        <ul class="link-list" id="link-container">
+            </ul>
+        
+        </div>
+
+    <script>
+        // JavaScript 
+        
+        // 1. Les données : les liens à afficher
+        // Utilisé les chemins complets pour extraire les noms de dossiers
+        const linksData = [
+            "/TABLEAUX-DE-SIGNES",
+            "/FACTORISATIONS",
+            "/NOMBRE_DERIVE"
+        ];
+        
+        // La racine est supposée être GitHub
+        const gitHubRoot = " https://ldv78100ym-hub.github.io"; 
+
+        // 2. La fonction d'affichage
+        function renderLinks() {
+            const container = document.getElementById('link-container');
+            
+            linksData.forEach(fullPath => {
+                // Construction de l'URL complète
+                const fullUrl = gitHubRoot + fullPath;
+                
+                // Diviser le chemin pour séparer le préfixe (ldv78100ym-hub) et le nom du dossier
+                const parts = fullPath.split('/');
+                const prefix = parts.slice(0, parts.length - 1).join('/'); // Ex: ldv78100ym-hub
+                // Le nom du dossier est le dernier élément, avec les "_" remplacés par "-" pour une meilleure lecture
+                const title = parts[parts.length - 1].replace(/_/g, '-');   
+
+                // Création des éléments HTML
+                const listItem = document.createElement('li');
+                listItem.classList.add('link-item');
+                
+                const icon = document.createElement('div');
+                icon.classList.add('link-icon');
+
+                const link = document.createElement('a');
+                link.href = fullUrl;
+                
+                // Création du Span pour le préfixe (ldv78100ym-hub/)
+                const prefixSpan = document.createElement('span');
+                prefixSpan.classList.add('path-prefix');
+                prefixSpan.textContent = prefix + '/';
+                
+                // Création du Span pour le titre (TABLEAUX-DE-SIGNES)
+                const titleSpan = document.createElement('span');
+                titleSpan.textContent = title;
+                
+                link.appendChild(prefixSpan);
+                link.appendChild(titleSpan);
+                
+                // Gestionnaire d'événements pour ouvrir dans un nouvel onglet
+                link.addEventListener('click', (event) => {
+                    window.open(fullUrl, '_blank');
+                    event.preventDefault(); // Empêche le comportement par défaut (double ouverture)
+                });
+
+                // Assemblage de l'élément de liste
+                listItem.appendChild(icon);
+                listItem.appendChild(link);
+                container.appendChild(listItem);
+            });
+        }
+
+        // 3. Exécution de la fonction au chargement de la page
+        document.addEventListener('DOMContentLoaded', renderLinks);
+    </script>
+
+</body>
+</html>
