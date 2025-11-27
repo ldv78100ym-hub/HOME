@@ -3,41 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste de Liens de Cours</title>
+    <title>Générateur de Liste de Liens Catégorisés</title>
     
     <style>
-        /* CSS AMÉLIORÉ */
+        /* Variables */
         :root {
-            --primary-color: #007bff;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --bg-light: #f8f9fa;
-            --text-dark: #343a40;
-            --border-light: #dee2e6;
+            --primary-color: #4CAF50; /* Vert pour l'action */
+            --secondary-color: #607D8B; /* Gris-bleu pour les détails */
+            --bg-light: #f4f7f6;
+            --text-dark: #263238;
+            --container-bg: #ffffff;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        /* Général */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 30px;
             background-color: var(--bg-light);
             color: var(--text-dark);
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: auto;
-            background-color: #ffffff;
+            background-color: var(--container-bg);
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
         }
 
         h1 {
             color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Bouton de Génération */
+        #generate-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
             margin-bottom: 25px;
+        }
+
+        #generate-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+
+        /* Liste Catégorisée */
+        .category-section {
+            margin-bottom: 30px;
+            border-top: 2px solid var(--border-radius);
+            padding-top: 15px;
+        }
+
+        .category-section:first-of-type {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 10px;
         }
 
         .link-list {
@@ -46,133 +89,159 @@
         }
 
         .link-item {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background-color: var(--bg-light);
+            border-radius: 4px;
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
-            padding: 12px 15px;
-            border: 1px solid var(--border-light);
-            border-radius: 6px;
-            transition: all 0.2s ease-in-out;
-            background-color: #ffffff;
+            transition: background-color 0.2s;
         }
 
         .link-item:hover {
-            background-color: #e9f7ff;
-            border-color: #b3d9ff;
-            transform: translateY(-2px);
-        }
-
-        .link-icon {
-            /* Style de l'icône verte (représentant le dossier/lien) */
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            background-color: var(--success-color);
-            border-radius: 50%;
-            margin-right: 15px;
-            flex-shrink: 0;
-            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+            background-color: #e0e6e4;
         }
 
         .link-item a {
             text-decoration: none;
-            color: var(--text-dark); /* Couleur du texte par défaut */
-            font-weight: 600;
+            color: var(--text-dark);
+            font-weight: 500;
             flex-grow: 1;
-            font-size: 1.1em;
         }
 
         .link-item a:hover {
             color: var(--primary-color);
         }
-        
-        /* Style pour le chemin du dossier */
-        .path-prefix {
-            color: var(--secondary-color);
-            font-weight: normal;
-            margin-right: 5px;
+
+        .icon {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-	
-	<center>Auteur : Yann Merdy (yann.merdy@gmail.com)</center>
-        <h1>Liens de Cours</h1>
-        <p>Cliquez sur l'un des liens ci-dessous pour ouvrir le contenu dans un nouvel onglet.</p>
-
-        <ul class="link-list" id="link-container">
-            </ul>
+        <h1>📑 Liste de Liens Catégorisés</h1>
         
-        </div>
+        <button id="generate-btn">
+            Générer un Fichier de Liens (.txt)
+        </button>
+
+        <p>Aperçu des liens triés par catégorie :</p>
+        
+        <div id="links-display">
+            </div>
+        
+    </div>
 
     <script>
         // JavaScript 
         
-        // 1. Les données : les liens à afficher
-        // Utilisé les chemins complets pour extraire les noms de dossiers
+        // 1. Les données : les liens à catégoriser
         const linksData = [
-            "/TABLEAUX-DE-SIGNES",
-            "/FACTORISATIONS",
-	    "/DROITES"
-            "/NOMBRE_DERIVE"
+            { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre" },
+            { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre" },
+            { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
+            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" }
         ];
-        
-        // La racine est supposée être GitHub
-        const gitHubRoot = " https://ldv78100ym-hub.github.io"; 
 
-        // 2. La fonction d'affichage
-        function renderLinks() {
-            const container = document.getElementById('link-container');
-            
-            linksData.forEach(fullPath => {
-                // Construction de l'URL complète
-                const fullUrl = gitHubRoot + fullPath;
-                
-                // Diviser le chemin pour séparer le préfixe (ldv78100ym-hub) et le nom du dossier
-                const parts = fullPath.split('/');
-                const prefix = parts.slice(0, parts.length - 1).join('/'); // Ex: ldv78100ym-hub
-                // Le nom du dossier est le dernier élément, avec les "_" remplacés par "-" pour une meilleure lecture
-                const title = parts[parts.length - 1].replace(/_/g, '-');   
-
-                // Création des éléments HTML
-                const listItem = document.createElement('li');
-                listItem.classList.add('link-item');
-                
-                const icon = document.createElement('div');
-                icon.classList.add('link-icon');
-
-                const link = document.createElement('a');
-                link.href = fullUrl;
-                
-                // Création du Span pour le préfixe (ldv78100ym-hub/)
-                const prefixSpan = document.createElement('span');
-                prefixSpan.classList.add('path-prefix');
-                prefixSpan.textContent = prefix + '/';
-                
-                // Création du Span pour le titre (TABLEAUX-DE-SIGNES)
-                const titleSpan = document.createElement('span');
-                titleSpan.textContent = title;
-                
-                link.appendChild(prefixSpan);
-                link.appendChild(titleSpan);
-                
-                // Gestionnaire d'événements pour ouvrir dans un nouvel onglet
-                link.addEventListener('click', (event) => {
-                    window.open(fullUrl, '_blank');
-                    event.preventDefault(); // Empêche le comportement par défaut (double ouverture)
-                });
-
-                // Assemblage de l'élément de liste
-                listItem.appendChild(icon);
-                listItem.appendChild(link);
-                container.appendChild(listItem);
-            });
+        // 2. Fonction pour regrouper les liens par catégorie
+        function groupLinksByCategory(data) {
+            return data.reduce((acc, link) => {
+                const category = link.category;
+                if (!acc[category]) {
+                    acc[category] = [];
+                }
+                acc[category].push(link);
+                return acc;
+            }, {});
         }
 
-        // 3. Exécution de la fonction au chargement de la page
-        document.addEventListener('DOMContentLoaded', renderLinks);
+        // 3. Fonction pour afficher les liens sur la page
+        function renderLinks(groupedLinks) {
+            const container = document.getElementById('links-display');
+            container.innerHTML = ''; // Nettoyer l'ancien contenu
+
+            for (const category in groupedLinks) {
+                // Créer la section pour la catégorie
+                const section = document.createElement('div');
+                section.classList.add('category-section');
+
+                // Titre de la catégorie
+                const title = document.createElement('h2');
+                title.textContent = category;
+                section.appendChild(title);
+
+                // Liste des liens
+                const list = document.createElement('ul');
+                list.classList.add('link-list');
+
+                groupedLinks[category].forEach(link => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('link-item');
+
+                    const icon = document.createElement('span');
+                    icon.classList.add('icon');
+                    // Utiliser une icône pour différencier les catégories (simple pour l'exemple)
+                    icon.textContent = (category === "Algèbre") ? '➗' : '📈'; 
+
+                    const anchor = document.createElement('a');
+                    anchor.href = link.url;
+                    anchor.textContent = link.title;
+                    anchor.target = '_blank'; // Ouvre dans un nouvel onglet
+
+                    listItem.appendChild(icon);
+                    listItem.appendChild(anchor);
+                    list.appendChild(listItem);
+                });
+
+                section.appendChild(list);
+                container.appendChild(section);
+            }
+        }
+
+        // 4. Fonction pour générer et télécharger un fichier texte
+        function generateAndDownloadFile(groupedLinks) {
+            let fileContent = "Liste des Liens de Cours Catégorisés\n\n";
+            
+            // Construire le contenu du fichier
+            for (const category in groupedLinks) {
+                fileContent += `--- ${category.toUpperCase()} ---\n`;
+                groupedLinks[category].forEach(link => {
+                    fileContent += `${link.title}: ${link.url}\n`;
+                });
+                fileContent += "\n";
+            }
+
+            // Créer un Blob (objet binaire) et un lien de téléchargement
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'liens_de_cours_categories.txt';
+            
+            // Simuler le clic pour démarrer le téléchargement
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url); // Libérer la mémoire
+            
+            alert('Le fichier "liens_de_cours_categories.txt" a été généré et téléchargé !');
+        }
+
+        // 5. Exécution et événements
+        document.addEventListener('DOMContentLoaded', () => {
+            const groupedLinks = groupLinksByCategory(linksData);
+            renderLinks(groupedLinks);
+
+            document.getElementById('generate-btn').addEventListener('click', () => {
+                generateAndDownloadFile(groupedLinks);
+            });
+        });
     </script>
 
 </body>
