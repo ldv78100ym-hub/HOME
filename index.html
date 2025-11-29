@@ -42,27 +42,6 @@
             margin-bottom: 30px;
         }
 
-        /* Bouton de Génération */
-        #generate-btn {
-            display: block;
-            width: 100%;
-            padding: 15px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            margin-bottom: 25px;
-        }
-
-        #generate-btn:hover {
-            background-color: #45a049;
-            transform: translateY(-1px);
-        }
-
         /* Liste Catégorisée */
         .category-section {
             margin-bottom: 30px;
@@ -129,8 +108,6 @@
         
         <div id="links-display">
             </div>
-
-        <button id="generate-btn">📄 Générer le fichier texte</button>
         
     </div>
 
@@ -141,6 +118,10 @@
         const linksData = [
             { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre" },
+            // Nouveaux liens Second Degré (Algèbre)
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/", title: "Second Degré (Général)", category: "Algèbre" },
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (Variante)", category: "Algèbre" },
+            
             { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
@@ -213,45 +194,10 @@
             }
         }
 
-        // 4. Fonction pour générer et télécharger un fichier texte
-        function generateAndDownloadFile(groupedLinks) {
-            let fileContent = "Liste des Liens de Cours Catégorisés\n\n";
-            
-            // Construire le contenu du fichier
-            for (const category in groupedLinks) {
-                fileContent += `--- ${category.toUpperCase()} ---\n`;
-                groupedLinks[category].forEach(link => {
-                    fileContent += `${link.title}: ${link.url}\n`;
-                });
-                fileContent += "\n";
-            }
-
-            // Créer un Blob (objet binaire) et un lien de téléchargement
-            const blob = new Blob([fileContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'liens_de_cours_categories.txt';
-            
-            // Simuler le clic pour démarrer le téléchargement
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            URL.revokeObjectURL(url); // Libérer la mémoire
-            
-            alert('Le fichier "liens_de_cours_categories.txt" a été généré et téléchargé !');
-        }
-
-        // 5. Exécution et événements
+        // 4. Exécution et événements
         document.addEventListener('DOMContentLoaded', () => {
             const groupedLinks = groupLinksByCategory(linksData);
             renderLinks(groupedLinks);
-
-            document.getElementById('generate-btn').addEventListener('click', () => {
-                generateAndDownloadFile(groupedLinks);
-            });
         });
     </script>
 
