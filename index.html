@@ -125,11 +125,12 @@
     <div class="container">
         <h1>📑 Liste de Liens Catégorisés</h1>
         
-        
         <p>Aperçu des liens triés par catégorie :</p>
         
         <div id="links-display">
             </div>
+
+        <button id="generate-btn">📄 Générer le fichier texte</button>
         
     </div>
 
@@ -142,7 +143,9 @@
             { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" },
-            { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" }
+            { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
+            // Ajout du lien Probabilités
+            { url: "https://ldv78100ym-hub.github.io/PROBABILITES/", title: "Probabilités", category: "Probabilités" }
         ];
 
         // 2. Fonction pour regrouper les liens par catégorie
@@ -189,8 +192,10 @@
                         icon.textContent = '➗';
                     } else if (category === "Géométrie") {
                         icon.textContent = '📐';
+                    } else if (category === "Probabilités") {
+                        icon.textContent = '🎲'; // Icône spécifique probas
                     } else {
-                        icon.textContent = '📈';
+                        icon.textContent = '📈'; // Analyse ou autre par défaut
                     }
 
                     const anchor = document.createElement('a');
