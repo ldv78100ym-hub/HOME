@@ -3,202 +3,712 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de Liste de Liens Catégorisés</title>
+    <title>Mathématiques - Accueil Dynamique</title>
     
     <style>
-        /* Variables */
+        /* --- VARIABLES --- */
         :root {
-            --primary-color: #4CAF50; /* Vert pour l'action */
-            --secondary-color: #607D8B; /* Gris-bleu pour les détails */
-            --bg-light: #f4f7f6;
+            --primary-color: #4CAF50; 
+            --secondary-color: #607D8B;
             --text-dark: #263238;
             --container-bg: #ffffff;
-            --border-radius: 8px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
         }
 
-        /* Général */
+        /* --- FOND D'ÉCRAN ANIMÉ --- */
+        @keyframes backgroundTransition {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body {
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 30px;
-            background-color: var(--bg-light);
+            padding: 0;
             color: var(--text-dark);
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex; 
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 30px; 
+            padding-bottom: 30px;
+            overflow-x: hidden; 
+            
+            background: linear-gradient(-45deg, #e0f2f1, #e3f2fd, #fce4ec, #fcfbe3); 
+            background-size: 400% 400%;
+            animation: backgroundTransition 15s ease infinite;
         }
 
         .container {
-            max-width: 800px;
-            margin: auto;
+            max-width: 1000px;
+            width: 100%;
             background-color: var(--container-bg);
             padding: 40px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
+            position: relative;
+            
+            display: flex;
+            flex-direction: column;
+            min-height: 70vh; 
         }
 
-        h1 {
+        /* --- FIL D'ARIANE (MENU) --- */
+        .breadcrumb {
+            margin-bottom: 30px;
+            display: flex; 
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px; 
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            z-index: 10; /* Important pour que le menu soit au-dessus du pop-up */
+            position: relative;
+        }
+
+        .breadcrumb-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            background-color: #ffffff;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            user-select: none;
+            position: relative; /* Nécessaire pour le positionnement du pop-up */
+        }
+
+        .breadcrumb-btn:hover {
+            border-color: var(--primary-color);
             color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 30px;
+            background-color: #e8f5e9;
+            transform: translateY(-2px);
         }
 
-        /* Liste Catégorisée */
+        .breadcrumb-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        
+        .breadcrumb-btn .icon-breadcrumb {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+        
+        /* --- POP-UP D'APERÇU (NOUVEAU) --- */
+        #category-popup {
+            position: absolute;
+            z-index: 100; /* Assure qu'il est au-dessus de tout */
+            background-color: #ffffff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            min-width: 250px;
+            max-width: 350px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(10px);
+            border: 1px solid var(--primary-color);
+            text-align: left;
+        }
+
+        #category-popup.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #category-popup h3 {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin: 0 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #eee;
+        }
+
+        #category-popup ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #category-popup li {
+            font-size: 0.9em;
+            padding: 5px 0;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+
+        #category-popup li:last-child {
+            border-bottom: none;
+        }
+
+        #category-popup a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        #category-popup a:hover {
+            color: var(--secondary-color);
+        }
+
+
+        /* --- ZONE D'AFFICHAGE --- */
+        #display-area {
+            flex-grow: 1; 
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        /* --- LOGO ANIMÉ --- */
+        .anim-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .anim-letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 28px;
+            font-weight: 900;
+            transform: translate(-50%, -50%);
+            transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* --- PANNEAU D'INFORMATIONS --- */
+        #info-panel {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+            text-align: left;
+            opacity: 0;
+            transform: translateX(30px);
+            animation: fadeInSlideLeft 1s ease-out forwards 0.5s;
+        }
+
+        #info-panel div {
+            margin-bottom: 15px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .info-line {
+            display: inline-block;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--primary-color);
+            text-shadow: 
+                1px 1px 0px rgba(0,0,0,0.1),
+                2px 2px 0px rgba(0,0,0,0.08),
+                3px 3px 0px rgba(0,0,0,0.05);
+            transform: rotateY(-15deg) rotateX(5deg) translateX(0);
+            transition: transform 0.3s ease-out;
+        }
+
+        .info-line:hover {
+            transform: rotateY(-10deg) rotateX(2deg) translateX(5px);
+        }
+
+        /* Animation pour le panneau d'infos */
+        @keyframes fadeInSlideLeft {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- SECTIONS CATÉGORIES --- */
         .category-section {
-            margin-bottom: 30px;
-            border-top: 2px solid var(--border-radius);
-            padding-top: 15px;
+            display: none; 
+            width: 100%;
+            animation: slideUp 0.4s ease-out;
+            padding-top: 20px;
         }
 
-        .category-section:first-of-type {
-            border-top: none;
-            padding-top: 0;
+        .category-section.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             color: var(--secondary-color);
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            border-left: 5px solid var(--primary-color);
-            padding-left: 10px;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            border-left: 6px solid var(--primary-color);
+            padding-left: 15px;
         }
 
+        /* --- LISTE DES LIENS --- */
         .link-list {
             list-style: none;
             padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
         }
 
-        .link-item {
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background-color: var(--bg-light);
-            border-radius: 4px;
+        .link-button {
             display: flex;
             align-items: center;
-            transition: background-color 0.2s;
-        }
-
-        .link-item:hover {
-            background-color: #e0e6e4;
-        }
-
-        .link-item a {
+            padding: 15px 20px;
+            border: 1px solid #eceff1;
+            border-radius: 10px; 
+            background-color: #ffffff;
             text-decoration: none;
             color: var(--text-dark);
             font-weight: 500;
-            flex-grow: 1;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
 
-        .link-item a:hover {
+        .link-button:hover {
+            background-color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.15);
+            transform: translateY(-2px);
             color: var(--primary-color);
         }
 
-        .icon {
-            margin-right: 10px;
+        .link-button .icon {
+            margin-right: 12px;
+            font-size: 1.4em;
             color: var(--primary-color);
-            font-size: 1.2em;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            #display-area {
+                flex-direction: column;
+                gap: 30px;
+            }
+            #info-panel {
+                text-align: center;
+                transform: translateX(0);
+                animation: fadeIn 0.8s ease-out forwards 0.5s;
+            }
+            .info-line {
+                transform: none;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            }
+            .container {
+                padding: 20px;
+                min-height: auto;
+            }
+            .anim-letter {
+                font-size: 24px;
+            }
+            .anim-container {
+                width: 300px;
+                height: 300px;
+            }
+            /* Masquer le pop-up sur les petits écrans pour éviter les problèmes de mise en page */
+            #category-popup {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>📑 Liste de Liens Catégorisés</h1>
         
-        <p>Aperçu des liens triés par catégorie :</p>
-        
-        <div id="links-display">
+        <div id="breadcrumb" class="breadcrumb">
             </div>
         
+        <div id="display-area">
+            
+            <div id="welcome-screen" class="anim-container">
+                </div>
+
+            <div id="info-panel">
+                <div><span class="info-line">Auteur : Yann Merdy</span></div>
+                <div><span class="info-line">Année 2025 - 2026</span></div>
+                <div><span class="info-line">Première STL & STI2D</span></div>
+                <div><span class="info-line">TRONC COMMUN & PCM</span></div>
+            </div>
+
+            <div id="categories-container" style="width: 100%;"></div>
+
+        </div>
+        
     </div>
+    
+    <div id="category-popup"></div>
 
     <script>
-        // JavaScript 
-        
-        // 1. Les données : les liens à catégoriser
+        // --- DONNÉES ---
         const linksData = [
             { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre" },
-            // Nouveaux liens Second Degré (Algèbre)
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/", title: "Second Degré (Général)", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (Variante)", category: "Algèbre" },
-            
             { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
-            // Ajout du lien Probabilités
             { url: "https://ldv78100ym-hub.github.io/PROBABILITES/", title: "Probabilités", category: "Probabilités" }
         ];
+        
+        // Regrouper les liens une seule fois au chargement pour le pop-up
+        const groupedLinks = linksData.reduce((acc, link) => {
+            if (!acc[link.category]) acc[link.category] = [];
+            acc[link.category].push(link);
+            return acc;
+        }, {});
 
-        // 2. Fonction pour regrouper les liens par catégorie
-        function groupLinksByCategory(data) {
-            return data.reduce((acc, link) => {
-                const category = link.category;
-                if (!acc[category]) {
-                    acc[category] = [];
-                }
-                acc[category].push(link);
-                return acc;
-            }, {});
+
+        // --- CONSTANTES ANIMATION ---
+        const WORD = "MATHÉMATIQUES";
+        const LETTERS = WORD.split('');
+        const RADIUS = 140; 
+        const CONTAINER_SIZE = 400;
+        let animationInterval;
+        let currentShapeIndex = -1;
+
+        const COLORS = [
+            '#4CAF50', '#2196F3', '#9C27B0', '#E91E63', '#F44336', '#FF9800', '#009688', '#3F51B5'
+        ];
+
+        // --- MATHÉMATIQUES DES FORMES (fonctions inchangées) ---
+        // (Les fonctions getPointsOnPolygon et shapeGenerators ont été omises ici pour la concision, mais elles sont les mêmes que précédemment)
+        
+        function getPointsOnPolygon(n, sides, radius, rotate = 0) {
+            const points = [];
+            const vertices = [];
+            for (let i = 0; i < sides; i++) {
+                const theta = (2 * Math.PI * i) / sides - Math.PI / 2 + rotate;
+                vertices.push({
+                    x: radius * Math.cos(theta),
+                    y: radius * Math.sin(theta)
+                });
+            }
+            vertices.push(vertices[0]); 
+            for (let i = 0; i < n; i++) {
+                let t = i / n; 
+                let segmentIndex = Math.floor(t * sides);
+                let segmentT = (t * sides) % 1; 
+
+                let p1 = vertices[segmentIndex];
+                let p2 = vertices[segmentIndex + 1];
+
+                points.push({
+                    x: p1.x + (p2.x - p1.x) * segmentT,
+                    y: p1.y + (p2.y - p1.y) * segmentT
+                });
+            }
+            return points;
         }
 
-        // 3. Fonction pour afficher les liens sur la page
-        function renderLinks(groupedLinks) {
-            const container = document.getElementById('links-display');
-            container.innerHTML = ''; // Nettoyer l'ancien contenu
+        const shapeGenerators = {
+            'Cercle': (n) => {
+                return LETTERS.map((_, i) => {
+                    const theta = (2 * Math.PI * i) / n - Math.PI / 2;
+                    return { x: RADIUS * Math.cos(theta), y: RADIUS * Math.sin(theta) };
+                });
+            },
+            'Ellipse': (n) => {
+                return LETTERS.map((_, i) => {
+                    const theta = (2 * Math.PI * i) / n - Math.PI / 2;
+                    return { x: RADIUS * 1.2 * Math.cos(theta), y: RADIUS * 0.7 * Math.sin(theta) };
+                });
+            },
+            'Carré': (n) => getPointsOnPolygon(n, 4, RADIUS, Math.PI/4),
+            'Losange': (n) => getPointsOnPolygon(n, 4, RADIUS, 0),
+            'Triangle': (n) => getPointsOnPolygon(n, 3, RADIUS),
+            'Rectangle': (n) => {
+                const w = RADIUS * 1.4;
+                const h = RADIUS * 0.8;
+                const v = [
+                    {x: -w/2, y: -h/2}, {x: w/2, y: -h/2}, 
+                    {x: w/2, y: h/2}, {x: -w/2, y: h/2}, {x: -w/2, y: -h/2}
+                ];
+                const points = [];
+                for(let i=0; i<n; i++) {
+                    let t = i/n * 4; 
+                    let idx = Math.floor(t);
+                    let rem = t % 1;
+                    points.push({
+                        x: v[idx].x + (v[idx+1].x - v[idx].x) * rem,
+                        y: v[idx].y + (v[idx+1].y - v[idx].y) * rem
+                    });
+                }
+                return points;
+            },
+            'Parallélogramme': (n) => {
+                const rect = shapeGenerators['Rectangle'](n);
+                return rect.map(p => ({ x: p.x + p.y * 0.5, y: p.y }));
+            },
+            'Trapèze': (n) => {
+                const pts = [];
+                const topW = RADIUS * 0.8;
+                const botW = RADIUS * 1.6;
+                const h = RADIUS;
+                const v = [
+                    {x: -topW/2, y: -h/2}, {x: topW/2, y: -h/2}, 
+                    {x: botW/2, y: h/2}, {x: -botW/2, y: h/2}, {x: -topW/2, y: -h/2}
+                ];
+                for(let i=0; i<n; i++) {
+                    let t = i/n * 4; 
+                    let idx = Math.floor(t);
+                    let rem = t % 1;
+                    pts.push({
+                        x: v[idx].x + (v[idx+1].x - v[idx].x) * rem,
+                        y: v[idx].y + (v[idx+1].y - v[idx].y) * rem
+                    });
+                }
+                return pts;
+            },
+            'Parabole': (n) => {
+                return LETTERS.map((_, i) => {
+                    let t = (i / (n - 1)) * 2 - 1; 
+                    let x = t * RADIUS;
+                    let y = (t * t) * RADIUS - RADIUS/2; 
+                    return { x, y };
+                });
+            },
+            'Hyperbole': (n) => {
+                return LETTERS.map((_, i) => {
+                    let isLeft = i < n/2;
+                    let t; 
+                    if(isLeft) {
+                        let progress = i / (n/2 - 1);
+                        t = -2 + progress * 1.5; 
+                    } else {
+                        let progress = (i - n/2) / (n/2 - 1);
+                        t = 0.5 + progress * 1.5; 
+                    }
+                    
+                    let x = t * (RADIUS/1.5);
+                    let y = (1/t) * (RADIUS/1.5) * -1; 
+                    return { x, y };
+                });
+            }
+        };
 
-            // On parcourt les catégories
-            for (const category in groupedLinks) {
-                // Créer la section pour la catégorie
+        const shapeNames = Object.keys(shapeGenerators);
+
+        // --- GESTION DE L'ANIMATION ---
+        function initAnimation() {
+            const container = document.getElementById('welcome-screen');
+            if(!container) return;
+
+            LETTERS.forEach((char, i) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.className = 'anim-letter';
+                span.id = `letter-${i}`;
+                container.appendChild(span);
+            });
+
+            const updateShape = () => {
+                let nextIndex;
+                do {
+                    nextIndex = Math.floor(Math.random() * shapeNames.length);
+                } while (nextIndex === currentShapeIndex);
+                currentShapeIndex = nextIndex;
+
+                const shapeName = shapeNames[currentShapeIndex];
+                const coords = shapeGenerators[shapeName](LETTERS.length);
+                const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+
+                LETTERS.forEach((_, i) => {
+                    const el = document.getElementById(`letter-${i}`);
+                    if(el) {
+                        el.style.transform = `translate(calc(-50% + ${coords[i].x}px), calc(-50% + ${coords[i].y}px))`;
+                        el.style.color = color; 
+                    }
+                });
+            };
+
+            setTimeout(updateShape, 100); 
+            animationInterval = setInterval(updateShape, 3000); 
+        }
+
+        function stopAnimation() {
+            if(animationInterval) clearInterval(animationInterval);
+        }
+
+
+        // --- UTILITAIRES DE PAGE ---
+        function sanitizeId(text) {
+            return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        }
+
+        function getCategoryIcon(category) {
+            if (category === "Algèbre") return '➗';
+            if (category === "Géométrie") return '📐';
+            if (category === "Probabilités") return '🎲';
+            return '📈';
+        }
+
+        // --- GESTION POP-UP (NOUVEAU) ---
+        const popup = document.getElementById('category-popup');
+        let currentBtn = null; // Pour garder une référence au bouton survolé
+
+        function showPopup(categoryName, event) {
+            // Empêcher l'affichage sur les petits écrans (voir la media query CSS)
+            if (window.innerWidth <= 768) return; 
+
+            const links = groupedLinks[categoryName] || [];
+            if (links.length === 0) return;
+
+            // 1. Remplir le contenu
+            let contentHTML = `<h3>${categoryName}</h3><ul>`;
+            links.forEach(link => {
+                contentHTML += `<li><a href="${link.url}" target="_blank">${link.title}</a></li>`;
+            });
+            contentHTML += `</ul>`;
+            
+            popup.innerHTML = contentHTML;
+
+            // 2. Positionner le pop-up
+            const buttonRect = event.currentTarget.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            
+            // Calculer la position relative au début du document (ou au conteneur principal)
+            const topPosition = buttonRect.bottom + window.scrollY - containerRect.top + 10;
+            const leftPosition = buttonRect.left + window.scrollX - containerRect.left;
+            
+            // Appliquer la position au pop-up, qui est positionné absolument par rapport au body/document
+            popup.style.top = `${topPosition}px`;
+            popup.style.left = `${leftPosition}px`;
+            
+            // Si le pop-up dépasse à droite, le décaler
+            const popUpWidth = popup.offsetWidth;
+            const containerWidth = containerRect.width;
+
+            if (leftPosition + popUpWidth > containerWidth) {
+                // Décaler le pop-up vers la gauche pour qu'il reste dans le conteneur
+                popup.style.left = `${containerWidth - popUpWidth - 40}px`; 
+            }
+            
+            // 3. Afficher le pop-up
+            popup.classList.add('visible');
+        }
+
+        function hidePopup() {
+            // Masquer le pop-up
+            popup.classList.remove('visible');
+        }
+
+        // --- NAVIGATION (Fonction pour afficher la section lors du clic) ---
+        function switchCategory(targetId) {
+            // Masquer l'écran d'accueil et arrêter l'animation
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const infoPanel = document.getElementById('info-panel');
+
+            if (welcomeScreen.style.display !== 'none') {
+                welcomeScreen.style.display = 'none';
+                infoPanel.style.display = 'none';
+                stopAnimation();
+            }
+
+            // Masquer toutes les sections
+            document.querySelectorAll('.category-section').forEach(el => el.classList.remove('active'));
+            
+            // Désactiver tous les boutons
+            document.querySelectorAll('.breadcrumb-btn').forEach(el => el.classList.remove('active'));
+
+            // Activer la section cible
+            const targetSection = document.getElementById('section-' + targetId);
+            if (targetSection) targetSection.classList.add('active');
+
+            // Activer le bouton cible
+            const targetBtn = document.getElementById('btn-' + targetId);
+            if (targetBtn) targetBtn.classList.add('active');
+        }
+
+
+        // --- INITIALISATION ---
+        function initPage() {
+            const breadcrumbContainer = document.getElementById('breadcrumb');
+            const categoriesContainer = document.getElementById('categories-container');
+            
+            categoriesContainer.innerHTML = '';
+            
+            const categories = Object.keys(groupedLinks);
+            if (categories.length === 0) return;
+
+            categories.forEach(category => {
+                const safeId = sanitizeId(category);
+                const icon = getCategoryIcon(category);
+
+                // Bouton Menu
+                const btn = document.createElement('a');
+                btn.href = "#"; 
+                btn.className = 'breadcrumb-btn';
+                btn.id = 'btn-' + safeId;
+                btn.innerHTML = `<span class="icon-breadcrumb">${icon}</span> ${category}`;
+                
+                // --- ÉVÉNEMENTS MODIFIÉS POUR LE POP-UP ---
+                btn.addEventListener('mouseenter', (e) => showPopup(category, e));
+                btn.addEventListener('mouseleave', hidePopup);
+                
+                // Garder l'événement click pour ouvrir la section complète
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchCategory(safeId);
+                });
+                // ----------------------------------------
+
+                breadcrumbContainer.appendChild(btn);
+
+                // Section Contenu (inchangée)
                 const section = document.createElement('div');
-                section.classList.add('category-section');
+                section.className = 'category-section';
+                section.id = 'section-' + safeId;
 
-                // Titre de la catégorie
                 const title = document.createElement('h2');
                 title.textContent = category;
                 section.appendChild(title);
 
-                // Liste des liens
-                const list = document.createElement('ul');
-                list.classList.add('link-list');
+                const ul = document.createElement('ul');
+                ul.className = 'link-list';
 
                 groupedLinks[category].forEach(link => {
-                    const listItem = document.createElement('li');
-                    listItem.classList.add('link-item');
-
-                    const icon = document.createElement('span');
-                    icon.classList.add('icon');
-                    
-                    // Choix de l'icône selon la catégorie
-                    if (category === "Algèbre") {
-                        icon.textContent = '➗';
-                    } else if (category === "Géométrie") {
-                        icon.textContent = '📐';
-                    } else if (category === "Probabilités") {
-                        icon.textContent = '🎲'; // Icône spécifique probas
-                    } else {
-                        icon.textContent = '📈'; // Analyse ou autre par défaut
-                    }
-
-                    const anchor = document.createElement('a');
-                    anchor.href = link.url;
-                    anchor.textContent = link.title;
-                    anchor.target = '_blank'; // Ouvre dans un nouvel onglet
-
-                    listItem.appendChild(icon);
-                    listItem.appendChild(anchor);
-                    list.appendChild(listItem);
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <a href="${link.url}" class="link-button" target="_blank">
+                            <span class="icon">${icon}</span>
+                            <span>${link.title}</span>
+                        </a>
+                    `;
+                    ul.appendChild(li);
                 });
 
-                section.appendChild(list);
-                container.appendChild(section);
-            }
+                section.appendChild(ul);
+                categoriesContainer.appendChild(section);
+            });
+
+            // Lancer l'animation du logo
+            initAnimation();
         }
 
-        // 4. Exécution et événements
-        document.addEventListener('DOMContentLoaded', () => {
-            const groupedLinks = groupLinksByCategory(linksData);
-            renderLinks(groupedLinks);
-        });
+        document.addEventListener('DOMContentLoaded', initPage);
+
     </script>
 
 </body>
