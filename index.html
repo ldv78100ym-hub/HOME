@@ -65,7 +65,7 @@
             gap: 12px; 
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
-            z-index: 10; /* Important pour que le menu soit au-dessus du pop-up */
+            z-index: 10;
             position: relative;
         }
 
@@ -83,7 +83,7 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             user-select: none;
-            position: relative; /* Nécessaire pour le positionnement du pop-up */
+            position: relative;
         }
 
         .breadcrumb-btn:hover {
@@ -105,10 +105,10 @@
             font-size: 1.2em;
         }
         
-        /* --- POP-UP D'APERÇU (NOUVEAU) --- */
+        /* --- POP-UP D'APERÇU --- */
         #category-popup {
             position: absolute;
-            z-index: 100; /* Assure qu'il est au-dessus de tout */
+            z-index: 100;
             background-color: #ffffff;
             border-radius: var(--border-radius);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -176,26 +176,25 @@
             flex-wrap: wrap;
         }
 
-        /* --- LOGO ANIMÉ --- */
+        /* --- VIDEO CONTAINER (MODIFIÉ) --- */
         .anim-container {
             position: relative;
-            width: 400px;
-            height: 400px;
+            /* Largeur flexible pour s'adapter à la vidéo */
+            width: 100%;
+            max-width: 600px; 
+            height: auto;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
         }
-
-        .anim-letter {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            font-size: 28px;
-            font-weight: 900;
-            transform: translate(-50%, -50%);
-            transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        
+        /* Style spécifique pour la vidéo */
+        .anim-container video {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         /* --- PANNEAU D'INFORMATIONS --- */
@@ -318,12 +317,11 @@
                 padding: 20px;
                 min-height: auto;
             }
-            .anim-letter {
-                font-size: 24px;
-            }
             .anim-container {
-                width: 300px;
-                height: 300px;
+                /* Sur mobile, on prend toute la largeur */
+                width: 100%;
+                max-width: 100%;
+                height: auto;
             }
             /* Masquer le pop-up sur les petits écrans pour éviter les problèmes de mise en page */
             #category-popup {
@@ -342,7 +340,11 @@
         <div id="display-area">
             
             <div id="welcome-screen" class="anim-container">
-                </div>
+                <video autoplay loop muted playsinline>
+                    <source src="animation-maths.mp4" type="video/mp4">
+                    Votre navigateur ne supporte pas la balise vidéo.
+                </video>
+            </div>
 
             <div id="info-panel">
                 <div><span class="info-line">Auteur : Yann Merdy</span></div>
@@ -368,7 +370,6 @@
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (Variante)", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" },
-            // NOUVEAU LIEN AJOUTÉ
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", title: "Calculs de Nombre Dérivé", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
             { url: "https://ldv78100ym-hub.github.io/PROBABILITES/", title: "Probabilités", category: "Probabilités" }
@@ -380,178 +381,6 @@
             acc[link.category].push(link);
             return acc;
         }, {});
-
-
-        // --- CONSTANTES ANIMATION ---
-        const WORD = "MATHÉMATIQUES";
-        const LETTERS = WORD.split('');
-        const RADIUS = 140; 
-        const CONTAINER_SIZE = 400;
-        let animationInterval;
-        let currentShapeIndex = -1;
-
-        const COLORS = [
-            '#4CAF50', '#2196F3', '#9C27B0', '#E91E63', '#F44336', '#FF9800', '#009688', '#3F51B5'
-        ];
-
-        // --- MATHÉMATIQUES DES FORMES (fonctions inchangées) ---
-        // (Les fonctions getPointsOnPolygon et shapeGenerators ont été omises ici pour la concision, mais elles sont les mêmes que précédemment)
-        
-        function getPointsOnPolygon(n, sides, radius, rotate = 0) {
-            const points = [];
-            const vertices = [];
-            for (let i = 0; i < sides; i++) {
-                const theta = (2 * Math.PI * i) / sides - Math.PI / 2 + rotate;
-                vertices.push({
-                    x: radius * Math.cos(theta),
-                    y: radius * Math.sin(theta)
-                });
-            }
-            vertices.push(vertices[0]); 
-            for (let i = 0; i < n; i++) {
-                let t = i / n; 
-                let segmentIndex = Math.floor(t * sides);
-                let segmentT = (t * sides) % 1; 
-
-                let p1 = vertices[segmentIndex];
-                let p2 = vertices[segmentIndex + 1];
-
-                points.push({
-                    x: p1.x + (p2.x - p1.x) * segmentT,
-                    y: p1.y + (p2.y - p1.y) * segmentT
-                });
-            }
-            return points;
-        }
-
-        const shapeGenerators = {
-            'Cercle': (n) => {
-                return LETTERS.map((_, i) => {
-                    const theta = (2 * Math.PI * i) / n - Math.PI / 2;
-                    return { x: RADIUS * Math.cos(theta), y: RADIUS * Math.sin(theta) };
-                });
-            },
-            'Ellipse': (n) => {
-                return LETTERS.map((_, i) => {
-                    const theta = (2 * Math.PI * i) / n - Math.PI / 2;
-                    return { x: RADIUS * 1.2 * Math.cos(theta), y: RADIUS * 0.7 * Math.sin(theta) };
-                });
-            },
-            'Carré': (n) => getPointsOnPolygon(n, 4, RADIUS, Math.PI/4),
-            'Losange': (n) => getPointsOnPolygon(n, 4, RADIUS, 0),
-            'Triangle': (n) => getPointsOnPolygon(n, 3, RADIUS),
-            'Rectangle': (n) => {
-                const w = RADIUS * 1.4;
-                const h = RADIUS * 0.8;
-                const v = [
-                    {x: -w/2, y: -h/2}, {x: w/2, y: -h/2}, 
-                    {x: w/2, y: h/2}, {x: -w/2, y: h/2}, {x: -w/2, y: -h/2}
-                ];
-                const points = [];
-                for(let i=0; i<n; i++) {
-                    let t = i/n * 4; 
-                    let idx = Math.floor(t);
-                    let rem = t % 1;
-                    points.push({
-                        x: v[idx].x + (v[idx+1].x - v[idx].x) * rem,
-                        y: v[idx].y + (v[idx+1].y - v[idx].y) * rem
-                    });
-                }
-                return points;
-            },
-            'Parallélogramme': (n) => {
-                const rect = shapeGenerators['Rectangle'](n);
-                return rect.map(p => ({ x: p.x + p.y * 0.5, y: p.y }));
-            },
-            'Trapèze': (n) => {
-                const pts = [];
-                const topW = RADIUS * 0.8;
-                const botW = RADIUS * 1.6;
-                const h = RADIUS;
-                const v = [
-                    {x: -topW/2, y: -h/2}, {x: topW/2, y: -h/2}, 
-                    {x: botW/2, y: h/2}, {x: -botW/2, y: h/2}, {x: -topW/2, y: -h/2}
-                ];
-                for(let i=0; i<n; i++) {
-                    let t = i/n * 4; 
-                    let idx = Math.floor(t);
-                    let rem = t % 1;
-                    pts.push({
-                        x: v[idx].x + (v[idx+1].x - v[idx].x) * rem,
-                        y: v[idx].y + (v[idx+1].y - v[idx].y) * rem
-                    });
-                }
-                return pts;
-            },
-            'Parabole': (n) => {
-                return LETTERS.map((_, i) => {
-                    let t = (i / (n - 1)) * 2 - 1; 
-                    let x = t * RADIUS;
-                    let y = (t * t) * RADIUS - RADIUS/2; 
-                    return { x, y };
-                });
-            },
-            'Hyperbole': (n) => {
-                return LETTERS.map((_, i) => {
-                    let isLeft = i < n/2;
-                    let t; 
-                    if(isLeft) {
-                        let progress = i / (n/2 - 1);
-                        t = -2 + progress * 1.5; 
-                    } else {
-                        let progress = (i - n/2) / (n/2 - 1);
-                        t = 0.5 + progress * 1.5; 
-                    }
-                    
-                    let x = t * (RADIUS/1.5);
-                    let y = (1/t) * (RADIUS/1.5) * -1; 
-                    return { x, y };
-                });
-            }
-        };
-
-        const shapeNames = Object.keys(shapeGenerators);
-
-        // --- GESTION DE L'ANIMATION ---
-        function initAnimation() {
-            const container = document.getElementById('welcome-screen');
-            if(!container) return;
-
-            LETTERS.forEach((char, i) => {
-                const span = document.createElement('span');
-                span.textContent = char;
-                span.className = 'anim-letter';
-                span.id = `letter-${i}`;
-                container.appendChild(span);
-            });
-
-            const updateShape = () => {
-                let nextIndex;
-                do {
-                    nextIndex = Math.floor(Math.random() * shapeNames.length);
-                } while (nextIndex === currentShapeIndex);
-                currentShapeIndex = nextIndex;
-
-                const shapeName = shapeNames[currentShapeIndex];
-                const coords = shapeGenerators[shapeName](LETTERS.length);
-                const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-
-                LETTERS.forEach((_, i) => {
-                    const el = document.getElementById(`letter-${i}`);
-                    if(el) {
-                        el.style.transform = `translate(calc(-50% + ${coords[i].x}px), calc(-50% + ${coords[i].y}px))`;
-                        el.style.color = color; 
-                    }
-                });
-            };
-
-            setTimeout(updateShape, 100); 
-            animationInterval = setInterval(updateShape, 3000); 
-        }
-
-        function stopAnimation() {
-            if(animationInterval) clearInterval(animationInterval);
-        }
 
 
         // --- UTILITAIRES DE PAGE ---
@@ -566,18 +395,15 @@
             return '📈';
         }
 
-        // --- GESTION POP-UP (NOUVEAU) ---
+        // --- GESTION POP-UP ---
         const popup = document.getElementById('category-popup');
-        let currentBtn = null; // Pour garder une référence au bouton survolé
 
         function showPopup(categoryName, event) {
-            // Empêcher l'affichage sur les petits écrans (voir la media query CSS)
             if (window.innerWidth <= 768) return; 
 
             const links = groupedLinks[categoryName] || [];
             if (links.length === 0) return;
 
-            // 1. Remplir le contenu
             let contentHTML = `<h3>${categoryName}</h3><ul>`;
             links.forEach(link => {
                 contentHTML += `<li><a href="${link.url}" target="_blank">${link.title}</a></li>`;
@@ -586,46 +412,39 @@
             
             popup.innerHTML = contentHTML;
 
-            // 2. Positionner le pop-up
             const buttonRect = event.currentTarget.getBoundingClientRect();
             const containerRect = document.querySelector('.container').getBoundingClientRect();
             
-            // Calculer la position relative au début du document (ou au conteneur principal)
             const topPosition = buttonRect.bottom + window.scrollY - containerRect.top + 10;
             const leftPosition = buttonRect.left + window.scrollX - containerRect.left;
             
-            // Appliquer la position au pop-up, qui est positionné absolument par rapport au body/document
             popup.style.top = `${topPosition}px`;
             popup.style.left = `${leftPosition}px`;
             
-            // Si le pop-up dépasse à droite, le décaler
             const popUpWidth = popup.offsetWidth;
             const containerWidth = containerRect.width;
 
             if (leftPosition + popUpWidth > containerWidth) {
-                // Décaler le pop-up vers la gauche pour qu'il reste dans le conteneur
                 popup.style.left = `${containerWidth - popUpWidth - 40}px`; 
             }
             
-            // 3. Afficher le pop-up
             popup.classList.add('visible');
         }
 
         function hidePopup() {
-            // Masquer le pop-up
             popup.classList.remove('visible');
         }
 
-        // --- NAVIGATION (Fonction pour afficher la section lors du clic) ---
+        // --- NAVIGATION ---
         function switchCategory(targetId) {
-            // Masquer l'écran d'accueil et arrêter l'animation
+            // Masquer l'écran d'accueil
             const welcomeScreen = document.getElementById('welcome-screen');
             const infoPanel = document.getElementById('info-panel');
 
             if (welcomeScreen.style.display !== 'none') {
                 welcomeScreen.style.display = 'none';
                 infoPanel.style.display = 'none';
-                stopAnimation();
+                // Plus besoin d'arrêter l'animation JS car elle n'existe plus
             }
 
             // Masquer toutes les sections
@@ -665,20 +484,17 @@
                 btn.id = 'btn-' + safeId;
                 btn.innerHTML = `<span class="icon-breadcrumb">${icon}</span> ${category}`;
                 
-                // --- ÉVÉNEMENTS MODIFIÉS POUR LE POP-UP ---
                 btn.addEventListener('mouseenter', (e) => showPopup(category, e));
                 btn.addEventListener('mouseleave', hidePopup);
                 
-                // Garder l'événement click pour ouvrir la section complète
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     switchCategory(safeId);
                 });
-                // ----------------------------------------
 
                 breadcrumbContainer.appendChild(btn);
 
-                // Section Contenu (inchangée)
+                // Section Contenu
                 const section = document.createElement('div');
                 section.className = 'category-section';
                 section.id = 'section-' + safeId;
@@ -704,9 +520,8 @@
                 section.appendChild(ul);
                 categoriesContainer.appendChild(section);
             });
-
-            // Lancer l'animation du logo
-            initAnimation();
+            
+            // Suppression de l'appel à initAnimation() car remplacé par la vidéo
         }
 
         document.addEventListener('DOMContentLoaded', initPage);
