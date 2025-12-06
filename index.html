@@ -6,7 +6,7 @@
     <title>Mathématiques - Accueil Dynamique</title>
     
     <style>
-        /* --- VARIABLES --- */
+        /* --- VARIABLES ET RESET --- */
         :root {
             --primary-color: #4CAF50; 
             --secondary-color: #607D8B;
@@ -16,47 +16,40 @@
             --shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
         }
 
-        /* --- FOND D'ÉCRAN ANIMÉ --- */
-        @keyframes backgroundTransition {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         body {
             font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 30px 0;
             color: var(--text-dark);
             line-height: 1.6;
             min-height: 100vh;
             display: flex; 
             justify-content: center;
             align-items: flex-start;
-            padding-top: 30px; 
-            padding-bottom: 30px;
-            overflow-x: hidden; 
-            
             background: linear-gradient(-45deg, #e0f2f1, #e3f2fd, #fce4ec, #fcfbe3); 
             background-size: 400% 400%;
             animation: backgroundTransition 15s ease infinite;
         }
 
+        @keyframes backgroundTransition {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
             max-width: 1000px;
-            width: 100%;
+            width: 95%;
             background-color: var(--container-bg);
             padding: 40px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            position: relative;
-            
             display: flex;
             flex-direction: column;
             min-height: 70vh; 
         }
 
-        /* --- FIL D'ARIANE (MENU) --- */
+        /* --- NAVIGATION PRINCIPALE (FIL D'ARIANE) --- */
         .breadcrumb {
             margin-bottom: 30px;
             display: flex; 
@@ -65,8 +58,6 @@
             gap: 12px; 
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
-            z-index: 10;
-            position: relative;
         }
 
         .breadcrumb-btn {
@@ -79,11 +70,9 @@
             text-decoration: none;
             color: var(--text-dark);
             font-weight: 600;
-            font-size: 0.95em;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.2s;
             user-select: none;
-            position: relative;
         }
 
         .breadcrumb-btn:hover {
@@ -97,99 +86,56 @@
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
-            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
         }
-        
+
         .breadcrumb-btn .icon-breadcrumb {
             margin-right: 8px;
             font-size: 1.2em;
         }
-        
-        /* --- POP-UP D'APERÇU --- */
-        #category-popup {
-            position: absolute;
-            z-index: 100;
-            background-color: #ffffff;
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+
+        /* --- BANDEAU MATHS EXPERTES (NOUVEAU) --- */
+        #expert-submenu {
+            width: 100%;
+            background-color: #f1f8e9;
+            border: 1px solid #c5e1a5;
+            border-radius: 10px;
             padding: 15px;
-            min-width: 250px;
-            max-width: 350px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, transform 0.3s;
-            transform: translateY(10px);
-            border: 1px solid var(--primary-color);
-            text-align: left;
-        }
-
-        #category-popup.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        #category-popup h3 {
-            color: var(--primary-color);
-            font-size: 1.2em;
-            margin: 0 0 10px 0;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #eee;
-        }
-
-        #category-popup ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        #category-popup li {
-            font-size: 0.9em;
-            padding: 5px 0;
-            border-bottom: 1px dashed #f0f0f0;
-        }
-
-        #category-popup li:last-child {
-            border-bottom: none;
-        }
-
-        #category-popup a {
-            color: var(--text-dark);
-            text-decoration: none;
-            transition: color 0.2s;
-            font-weight: 500;
-        }
-
-        #category-popup a:hover {
-            color: var(--secondary-color);
-        }
-
-
-        /* --- ZONE D'AFFICHAGE --- */
-        #display-area {
-            flex-grow: 1; 
-            position: relative;
+            margin-bottom: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 40px;
             flex-wrap: wrap;
+            gap: 10px;
+            animation: fadeIn 0.5s ease;
         }
 
-        /* --- VIDEO CONTAINER (MODIFIÉ) --- */
+        .expert-btn {
+            padding: 8px 20px;
+            background-color: white;
+            border: 2px solid #8bc34a;
+            color: #558b2f;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .expert-btn:hover, .expert-btn.active {
+            background-color: #8bc34a;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* --- CONTENU --- */
+        #display-area {
+            width: 100%;
+        }
+
         .anim-container {
-            position: relative;
-            /* Largeur flexible pour s'adapter à la vidéo */
             width: 100%;
             max-width: 600px; 
-            height: auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
+            margin: 0 auto;
         }
         
-        /* Style spécifique pour la vidéo */
         .anim-container video {
             width: 100%;
             height: auto;
@@ -197,60 +143,17 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        /* --- PANNEAU D'INFORMATIONS --- */
         #info-panel {
-            font-size: 1.2em;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
             color: var(--secondary-color);
-            text-align: left;
-            opacity: 0;
-            transform: translateX(30px);
-            animation: fadeInSlideLeft 1s ease-out forwards 0.5s;
         }
-
-        #info-panel div {
-            margin-bottom: 15px;
-            perspective: 1000px;
-            transform-style: preserve-3d;
-        }
-
+        
         .info-line {
-            display: inline-block;
-            font-weight: 600;
-            line-height: 1.4;
-            color: var(--primary-color);
-            text-shadow: 
-                1px 1px 0px rgba(0,0,0,0.1),
-                2px 2px 0px rgba(0,0,0,0.08),
-                3px 3px 0px rgba(0,0,0,0.05);
-            transform: rotateY(-15deg) rotateX(5deg) translateX(0);
-            transition: transform 0.3s ease-out;
-        }
-
-        .info-line:hover {
-            transform: rotateY(-10deg) rotateX(2deg) translateX(5px);
-        }
-
-        /* Animation pour le panneau d'infos */
-        @keyframes fadeInSlideLeft {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* --- SECTIONS CATÉGORIES --- */
-        .category-section {
-            display: none; 
-            width: 100%;
-            animation: slideUp 0.4s ease-out;
-            padding-top: 20px;
-        }
-
-        .category-section.active {
             display: block;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-bottom: 5px;
+            font-weight: 600;
         }
 
         h2 {
@@ -261,12 +164,11 @@
             padding-left: 15px;
         }
 
-        /* --- LISTE DES LIENS --- */
         .link-list {
             list-style: none;
             padding: 0;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 15px;
         }
 
@@ -285,9 +187,7 @@
         }
 
         .link-button:hover {
-            background-color: #fff;
             border-color: var(--primary-color);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.15);
             transform: translateY(-2px);
             color: var(--primary-color);
         }
@@ -295,38 +195,14 @@
         .link-button .icon {
             margin-right: 12px;
             font-size: 1.4em;
-            color: var(--primary-color);
         }
 
-        /* --- Responsive Design --- */
-        @media (max-width: 768px) {
-            #display-area {
-                flex-direction: column;
-                gap: 30px;
-            }
-            #info-panel {
-                text-align: center;
-                transform: translateX(0);
-                animation: fadeIn 0.8s ease-out forwards 0.5s;
-            }
-            .info-line {
-                transform: none;
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-            }
-            .container {
-                padding: 20px;
-                min-height: auto;
-            }
-            .anim-container {
-                /* Sur mobile, on prend toute la largeur */
-                width: 100%;
-                max-width: 100%;
-                height: auto;
-            }
-            /* Masquer le pop-up sur les petits écrans pour éviter les problèmes de mise en page */
-            #category-popup {
-                display: none;
-            }
+        /* Utilitaires */
+        .hidden { display: none !important; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -334,207 +210,191 @@
 
     <div class="container">
         
-        <div id="breadcrumb" class="breadcrumb">
-            </div>
+        <div id="breadcrumb" class="breadcrumb"></div>
         
         <div id="display-area">
             
-            <div id="welcome-screen" class="anim-container">
-                <video autoplay loop muted playsinline>
-                    <source src="animation-maths.mp4" type="video/mp4">
-                    Votre navigateur ne supporte pas la balise vidéo.
-                </video>
+            <div id="welcome-view">
+                <div class="anim-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="animation-maths.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas la balise vidéo.
+                    </video>
+                </div>
+                <div id="info-panel">
+                    <span class="info-line">Auteur : Yann Merdy</span>
+                    <span class="info-line">Année 2025 - 2026</span>
+                    <span class="info-line">Première STL & STI2D</span>
+                    <span class="info-line">TRONC COMMUN & PCM</span>
+                </div>
             </div>
 
-            <div id="info-panel">
-                <div><span class="info-line">Auteur : Yann Merdy</span></div>
-                <div><span class="info-line">Année 2025 - 2026</span></div>
-                <div><span class="info-line">Première STL & STI2D</span></div>
-                <div><span class="info-line">TRONC COMMUN & PCM</span></div>
-            </div>
+            <div id="content-view" class="hidden">
+                <h2 id="section-title"></h2>
+                
+                <div id="expert-submenu" class="hidden">
+                    <button class="expert-btn" onclick="filterExpertLinks('ARITHMÉTIQUE')">ARITHMÉTIQUE</button>
+                    <button class="expert-btn" onclick="filterExpertLinks('MATRICES')">MATRICES</button>
+                    <button class="expert-btn" onclick="filterExpertLinks('NOMBRES COMPLEXES')">NOMBRES COMPLEXES</button>
+                </div>
 
-            <div id="categories-container" style="width: 100%;"></div>
+                <div id="links-container"></div>
+            </div>
 
         </div>
-        
     </div>
-    
-    <div id="category-popup"></div>
 
     <script>
+        // --- SÉCURITÉ : Affiche une erreur si le script plante ---
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("Erreur Script : " + message + "\nLigne : " + lineno);
+        };
+
         // --- DONNÉES ---
         const linksData = [
-            // Nouveaux liens ajoutés
+            // ALGEBRE
             { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", title: "Calculs (Algèbre Divers)", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html", title: "Évolutions (Algèbre Divers)", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/IDENTITES_REMARQUABLES.html", title: "Identités Remarquables (Algèbre Divers)", category: "Algèbre" },
-            // Liens existants
             { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", title: "Second Degré (Général)", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (Variante)", category: "Algèbre" },
+            
+            // MATHS EXPERTES - ARITHMETIQUE (Sous-catégorie)
+            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_1.html", title: "Divisibilité et Propriétés", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
+            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_2.html", title: "Division Euclidienne", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
+            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_3.html", title: "PGCD - Première Approche", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
+            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_4.html", title: "Algorithme d'Euclide et Théorème de Bézout", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
+            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_5.html", title: "L'Équation Diopantienne", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
+            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_6.html", title: "Nombres Premiers et Décomposition", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
+            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/EUCLIDE_ETENDU.html", title: "Algorithme d'Euclide Étendu", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
+            
+            // MATHS EXPERTES - MATRICES
+            { url: "https://ldv78100ym-hub.github.io/MATHS_EXPERT/MATRICES.html", title: "Matrices", category: "MATHS EXPERTES", subcategory: "MATRICES" },
+            
+            // MATHS EXPERTES - NOMBRES COMPLEXES
+            { url: "https://ldv78100ym-hub.github.io/MATHS_EXPERT/NOMBRES_COMPLEXES.html", title: "Nombres Complexes", category: "MATHS EXPERTES", subcategory: "NOMBRES COMPLEXES" },
+
+            // ANALYSE
             { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", title: "Calculs de Nombre Dérivé", category: "Analyse" },
+            
+            // GEOMETRIE & PROBA & JEUX
             { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
             { url: "https://ldv78100ym-hub.github.io/PROBABILITES/", title: "Probabilités", category: "Probabilités" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", title: "Jeux Mathématiques (Second Degré)", category: "JEUX" },
-            { url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", title: "Produit Scalaire (Quête)", category: "JEUX" } 
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", title: "Jeux Mathématiques", category: "JEUX" },
+            { url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", title: "Quête Produit Scalaire", category: "JEUX" } 
         ];
-        
-        // Regrouper les liens une seule fois au chargement pour le pop-up
-        const groupedLinks = linksData.reduce((acc, link) => {
-            if (!acc[link.category]) acc[link.category] = [];
-            acc[link.category].push(link);
-            return acc;
-        }, {});
 
+        // --- FONCTIONS ---
 
-        // --- UTILITAIRES DE PAGE ---
-        function sanitizeId(text) {
-            return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        }
-
-        function getCategoryIcon(category) {
-            if (category === "Algèbre") return '➗';
-            if (category === "Géométrie") return '📐';
-            if (category === "Probabilités") return '🎲';
-            if (category === "JEUX") return '🎮'; // Icône pour les jeux
+        function getIcon(cat) {
+            if (cat === "Algèbre") return '➗';
+            if (cat === "Géométrie") return '📐';
+            if (cat === "Probabilités") return '🎲';
+            if (cat === "JEUX") return '🎮'; 
+            if (cat === "MATHS EXPERTES") return '⚛️'; 
             return '📈';
         }
 
-        // --- GESTION POP-UP ---
-        const popup = document.getElementById('category-popup');
-
-        function showPopup(categoryName, event) {
-            if (window.innerWidth <= 768) return; 
-
-            const links = groupedLinks[categoryName] || [];
-            if (links.length === 0) return;
-
-            let contentHTML = `<h3>${categoryName}</h3><ul>`;
-            links.forEach(link => {
-                contentHTML += `<li><a href="${link.url}" target="_blank">${link.title}</a></li>`;
+        // Fonction principale de navigation
+        function goToCategory(categoryName) {
+            const welcome = document.getElementById('welcome-view');
+            const content = document.getElementById('content-view');
+            const expertMenu = document.getElementById('expert-submenu');
+            const title = document.getElementById('section-title');
+            
+            // 1. Basculer l'affichage
+            welcome.classList.add('hidden');
+            content.classList.remove('hidden');
+            
+            // 2. Mettre à jour les boutons actifs
+            document.querySelectorAll('.breadcrumb-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.includes(categoryName)) btn.classList.add('active');
             });
-            contentHTML += `</ul>`;
-            
-            popup.innerHTML = contentHTML;
 
-            const buttonRect = event.currentTarget.getBoundingClientRect();
-            const containerRect = document.querySelector('.container').getBoundingClientRect();
-            
-            const topPosition = buttonRect.bottom + window.scrollY - containerRect.top + 10;
-            const leftPosition = buttonRect.left + window.scrollX - containerRect.left;
-            
-            popup.style.top = `${topPosition}px`;
-            popup.style.left = `${leftPosition}px`;
-            
-            const popUpWidth = popup.offsetWidth;
-            const containerWidth = containerRect.width;
+            // 3. Titre
+            title.textContent = categoryName;
 
-            if (leftPosition + popUpWidth > containerWidth) {
-                popup.style.left = `${containerWidth - popUpWidth - 40}px`; 
+            // 4. Logique Spéciale : MATHS EXPERTES
+            if (categoryName === "MATHS EXPERTES") {
+                expertMenu.classList.remove('hidden');
+                // Par défaut, cliquer sur le premier bouton (Arithmétique)
+                filterExpertLinks('ARITHMÉTIQUE');
+            } else {
+                expertMenu.classList.add('hidden');
+                // Afficher tous les liens de la catégorie normale
+                const links = linksData.filter(l => l.category === categoryName);
+                displayLinks(links);
             }
-            
-            popup.classList.add('visible');
         }
 
-        function hidePopup() {
-            popup.classList.remove('visible');
+        // Fonction pour le sous-menu Expert
+        function filterExpertLinks(subcategoryName) {
+            // Mettre à jour les boutons du sous-menu
+            document.querySelectorAll('.expert-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.textContent === subcategoryName) btn.classList.add('active');
+            });
+
+            // Filtrer les liens
+            const links = linksData.filter(l => 
+                l.category === "MATHS EXPERTES" && l.subcategory === subcategoryName
+            );
+            displayLinks(links);
         }
 
-        // --- NAVIGATION ---
-        function switchCategory(targetId) {
-            // Masquer l'écran d'accueil
-            const welcomeScreen = document.getElementById('welcome-screen');
-            const infoPanel = document.getElementById('info-panel');
+        // Affichage générique des liens
+        function displayLinks(links) {
+            const container = document.getElementById('links-container');
+            container.innerHTML = ''; // Vider
 
-            if (welcomeScreen.style.display !== 'none') {
-                welcomeScreen.style.display = 'none';
-                infoPanel.style.display = 'none';
-                // Plus besoin d'arrêter l'animation JS car elle n'existe plus
+            if (links.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:gray;">Aucun lien disponible.</p>';
+                return;
             }
 
-            // Masquer toutes les sections
-            document.querySelectorAll('.category-section').forEach(el => el.classList.remove('active'));
-            
-            // Désactiver tous les boutons
-            document.querySelectorAll('.breadcrumb-btn').forEach(el => el.classList.remove('active'));
+            const ul = document.createElement('ul');
+            ul.className = 'link-list';
 
-            // Activer la section cible
-            const targetSection = document.getElementById('section-' + targetId);
-            if (targetSection) targetSection.classList.add('active');
+            links.forEach(link => {
+                const li = document.createElement('li');
+                const icon = getIcon(link.category);
+                li.innerHTML = `
+                    <a href="${link.url}" class="link-button" target="_blank">
+                        <span class="icon">${icon}</span>
+                        <span>${link.title}</span>
+                    </a>
+                `;
+                ul.appendChild(li);
+            });
 
-            // Activer le bouton cible
-            const targetBtn = document.getElementById('btn-' + targetId);
-            if (targetBtn) targetBtn.classList.add('active');
+            container.appendChild(ul);
         }
 
+        // Initialisation au chargement
+        window.addEventListener('DOMContentLoaded', () => {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES"];
 
-        // --- INITIALISATION ---
-        function initPage() {
-            const breadcrumbContainer = document.getElementById('breadcrumb');
-            const categoriesContainer = document.getElementById('categories-container');
-            
-            categoriesContainer.innerHTML = '';
-            
-            const categories = Object.keys(groupedLinks);
-            if (categories.length === 0) return;
-
-            categories.forEach(category => {
-                const safeId = sanitizeId(category);
-                const icon = getCategoryIcon(category);
-
-                // Bouton Menu
+            categories.forEach(cat => {
                 const btn = document.createElement('a');
-                btn.href = "#"; 
                 btn.className = 'breadcrumb-btn';
-                btn.id = 'btn-' + safeId;
-                btn.innerHTML = `<span class="icon-breadcrumb">${icon}</span> ${category}`;
-                
-                btn.addEventListener('mouseenter', (e) => showPopup(category, e));
-                btn.addEventListener('mouseleave', hidePopup);
+                btn.href = "#";
+                btn.innerHTML = `<span class="icon-breadcrumb">${getIcon(cat)}</span> ${cat}`;
                 
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    switchCategory(safeId);
+                    goToCategory(cat);
                 });
 
-                breadcrumbContainer.appendChild(btn);
-
-                // Section Contenu
-                const section = document.createElement('div');
-                section.className = 'category-section';
-                section.id = 'section-' + safeId;
-
-                const title = document.createElement('h2');
-                title.textContent = category;
-                section.appendChild(title);
-
-                const ul = document.createElement('ul');
-                ul.className = 'link-list';
-
-                groupedLinks[category].forEach(link => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <a href="${link.url}" class="link-button" target="_blank">
-                            <span class="icon">${icon}</span>
-                            <span>${link.title}</span>
-                        </a>
-                    `;
-                    ul.appendChild(li);
-                });
-
-                section.appendChild(ul);
-                categoriesContainer.appendChild(section);
+                breadcrumb.appendChild(btn);
             });
-            
-            // Suppression de l'appel à initAnimation() car remplacé par la vidéo
-        }
-
-        document.addEventListener('DOMContentLoaded', initPage);
+        });
 
     </script>
-
 </body>
 </html>
