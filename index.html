@@ -286,18 +286,23 @@
             { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
             { url: "https://ldv78100ym-hub.github.io/PROBABILITES/", title: "Probabilités", category: "Probabilités" },
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", title: "Jeux Mathématiques", category: "JEUX" },
-            { url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", title: "Quête Produit Scalaire", category: "JEUX" } 
+            { url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", title: "Quête Produit Scalaire", category: "JEUX" },
+            
+            // NOUVEAU : CPGE
+            { url: "https://ldv78100ym-hub.github.io/CPGE/RAISONNEMENT_PAR_L_ABSURDE.html", title: "Raisonnement par l'Absurde", category: "CPGE" }
         ];
 
         // --- FONCTIONS ---
 
         function getIcon(cat) {
             if (cat === "Algèbre") return '➗';
+            if (cat === "Analyse") return '📈';
             if (cat === "Géométrie") return '📐';
             if (cat === "Probabilités") return '🎲';
             if (cat === "JEUX") return '🎮'; 
-            if (cat === "MATHS EXPERTES") return '⚛️'; 
-            return '📈';
+            if (cat === "MATHS EXPERTES") return '⚛️';
+            if (cat === "CPGE") return '🎓'; // Nouvelle icône pour CPGE
+            return '❓';
         }
 
         // Fonction principale de navigation
@@ -314,20 +319,21 @@
             // 2. Mettre à jour les boutons actifs
             document.querySelectorAll('.breadcrumb-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if(btn.innerText.includes(categoryName)) btn.classList.add('active');
+                // Utiliser textContent ou innerText car innerHTML contient aussi la balise span
+                if(btn.textContent.includes(categoryName)) btn.classList.add('active');
             });
 
             // 3. Titre
             title.textContent = categoryName;
 
-            // 4. Logique Spéciale : MATHS EXPERTES
+            // 4. Logique Spéciale : MATHS EXPERTES (garde le sous-menu)
             if (categoryName === "MATHS EXPERTES") {
                 expertMenu.classList.remove('hidden');
                 // Par défaut, cliquer sur le premier bouton (Arithmétique)
                 filterExpertLinks('ARITHMÉTIQUE');
             } else {
                 expertMenu.classList.add('hidden');
-                // Afficher tous les liens de la catégorie normale
+                // Afficher tous les liens de la catégorie normale (y compris CPGE)
                 const links = linksData.filter(l => l.category === categoryName);
                 displayLinks(links);
             }
@@ -354,7 +360,7 @@
             container.innerHTML = ''; // Vider
 
             if (links.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:gray;">Aucun lien disponible.</p>';
+                container.innerHTML = '<p style="text-align:center; color:gray;">Aucun lien disponible pour cette section.</p>';
                 return;
             }
 
@@ -363,7 +369,8 @@
 
             links.forEach(link => {
                 const li = document.createElement('li');
-                const icon = getIcon(link.category);
+                // L'icône est déterminée par la catégorie, même pour les sous-catégories, c'est cohérent avec le design existant.
+                const icon = getIcon(link.category); 
                 li.innerHTML = `
                     <a href="${link.url}" class="link-button" target="_blank">
                         <span class="icon">${icon}</span>
@@ -379,7 +386,8 @@
         // Initialisation au chargement
         window.addEventListener('DOMContentLoaded', () => {
             const breadcrumb = document.getElementById('breadcrumb');
-            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES"];
+            // Ajout de "CPGE" à la liste des catégories
+            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES", "CPGE"];
 
             categories.forEach(cat => {
                 const btn = document.createElement('a');
@@ -399,6 +407,3 @@
     </script>
 </body>
 </html>
-
-
-
