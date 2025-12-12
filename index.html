@@ -288,8 +288,11 @@
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", title: "Jeux Mathématiques", category: "JEUX" },
             { url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", title: "Quête Produit Scalaire", category: "JEUX" },
             
-            // NOUVEAU : CPGE
-            { url: "https://ldv78100ym-hub.github.io/CPGE/RAISONNEMENT_PAR_L_ABSURDE.html", title: "Raisonnement par l'Absurde", category: "CPGE" }
+            // CPGE
+            { url: "https://ldv78100ym-hub.github.io/CPGE/RAISONNEMENT_PAR_L_ABSURDE.html", title: "Raisonnement par l'Absurde", category: "CPGE" },
+            
+            // FLASHCARDS
+            { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/FACTORISATIONS_FLASHCARDS.html", title: "Factorisations", category: "Flashcards" }
         ];
 
         // --- FONCTIONS ---
@@ -301,7 +304,8 @@
             if (cat === "Probabilités") return '🎲';
             if (cat === "JEUX") return '🎮'; 
             if (cat === "MATHS EXPERTES") return '⚛️';
-            if (cat === "CPGE") return '🎓'; // Nouvelle icône pour CPGE
+            if (cat === "CPGE") return '🎓';
+            if (cat === "Flashcards") return '⚡';
             return '❓';
         }
 
@@ -333,7 +337,7 @@
                 filterExpertLinks('ARITHMÉTIQUE');
             } else {
                 expertMenu.classList.add('hidden');
-                // Afficher tous les liens de la catégorie normale (y compris CPGE)
+                // Afficher tous les liens de la catégorie normale (y compris CPGE et Flashcards)
                 const links = linksData.filter(l => l.category === categoryName);
                 displayLinks(links);
             }
@@ -386,8 +390,8 @@
         // Initialisation au chargement
         window.addEventListener('DOMContentLoaded', () => {
             const breadcrumb = document.getElementById('breadcrumb');
-            // Ajout de "CPGE" à la liste des catégories
-            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES", "CPGE"];
+            // Ajout de "Flashcards" à la liste des catégories
+            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES", "CPGE", "Flashcards"];
 
             categories.forEach(cat => {
                 const btn = document.createElement('a');
