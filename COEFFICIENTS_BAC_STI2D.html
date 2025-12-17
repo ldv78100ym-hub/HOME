@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coefficients Bac STI2D - Session 2027</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: var(--secondary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .table-section { flex: 1; min-width: 500px; }
+        .chart-section { flex: 1; min-width: 350px; display: flex; flex-direction: column; align-items: center; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background-color: var(--primary); color: white; text-transform: uppercase; font-size: 0.85em; }
+
+        .category-header { background-color: var(--light); font-weight: bold; text-align: left; }
+        .anticip-row { background-color: #e8f4fd; font-weight: 600; }
+        
+        /* Ligne cliquable du Contrôle Continu */
+        .clickable-cc {
+            background-color: #fff4e5;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+        .clickable-cc:hover { background-color: #ffe0b2; }
+        .click-hint { font-size: 0.8em; color: #e67e22; display: block; font-style: italic; }
+
+        .total-row { background-color: var(--secondary); color: white; font-weight: bold; font-size: 1.1em; }
+
+        /* Styles de la Fenêtre Modale (Popup) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fdfdfd;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 15px;
+            width: 85%;
+            max-width: 950px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .popup-grid { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+        .card { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; flex: 1; min-width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .highlight { font-weight: bold; color: #2c3e50; }
+        .footer-note { font-size: 0.9em; color: #7f8c8d; margin-top: 20px; font-style: italic; }
+
+        #canvas-holder { width: 100%; max-width: 500px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Bac STI2D : Coefficients Officiels (Réforme 2027)</h1>
+
+    <div class="main-content">
+        <div class="table-section">
+            <h2>Répartition par Matière</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matière</th>
+                        <th>Épreuve</th>
+                        <th>1ère</th>
+                        <th>Term</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="category-header"><td colspan="5">Épreuves Ponctuelles (60 pts)</td></tr>
+                    <tr class="anticip-row">
+                        <td>Français</td>
+                        <td>Écrit + Oral</td>
+                        <td>10</td>
+                        <td>-</td>
+                        <td>10</td>
+                    </tr>
+                    <tr class="anticip-row">
+                        <td>Mathématiques</td>
+                        <td>Écrit</td>
+                        <td>2</td>
+                        <td>-</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Physique-Chimie & Maths</td>
+                        <td>Écrit</td>
+                        <td>-</td>
+                        <td>16</td>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <td>Spécialité 2I2D</td>
+                        <td>Écrit + Projet</td>
+                        <td>-</td>
+                        <td>16</td>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <td>Grand Oral</td>
+                        <td>Oral</td>
+                        <td>-</td>
+                        <td>12</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td>Philosophie</td>
+                        <td>Écrit</td>
+                        <td>-</td>
+                        <td>4</td>
+                        <td>4</td>
+                    </tr>
+
+                    <tr class="clickable-cc" onclick="openPopup()">
+                        <td colspan="2">Contrôle Continu (Détail cliquable)</td>
+                        <td>13</td>
+                        <td>27</td>
+                        <td>40 <span class="click-hint">Cliquer pour voir le détail</span></td>
+                    </tr>
+
+                    <tr class="total-row">
+                        <td colspan="2">TOTAL DES COEFFICIENTS</td>
+                        <td>33</td>
+                        <td>67</td>
+                        <td>100</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-section">
+            <h2>Visualisation Globale</h2>
+            <div id="canvas-holder">
+                <canvas id="chartBac"></canvas>
+            </div>
+            
+            <div style="background: var(--light); padding: 20px; border-radius: 8px; margin-top: 20px; border-left: 5px solid var(--primary);">
+                <h3>Calcul de la Moyenne</h3>
+                <p>La note finale \( M \) est calculée ainsi :</p>
+                \[ M = \frac{\sum_{i=1}^{n} (Note_i \times Coeff_i)}{100} \]
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupCC" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        
+        <h1 style="color:#2980b9; border-bottom: 2px solid #eee; padding-bottom: 10px; text-align: left;">
+            Focus : Détail du Contrôle Continu (40 pts)
+        </h1>
+        <p>Le contrôle continu représente 40 % de la note finale. Il est calculé à partir de la moyenne annuelle de vos bulletins scolaires.</p>
+
+        <div class="popup-grid">
+            <div class="card">
+                <h2 style="color:#2980b9;">Répartition par matière</h2>
+                <table style="text-align: left;">
+                    <thead>
+                        <tr>
+                            <th>Enseignement</th>
+                            <th>1ère</th>
+                            <th>Term</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Histoire-Géographie</td><td>3</td><td>3</td><td><span class="highlight">6</span></td></tr>
+                        <tr><td>Langue Vivante A</td><td>3</td><td>3</td><td><span class="highlight">6</span></td></tr>
+                        <tr><td>Langue Vivante B</td><td>3</td><td>3</td><td><span class="highlight">6</span></td></tr>
+                        <tr><td>Mathématiques</td><td>3</td><td>3</td><td><span class="highlight">6</span></td></tr>
+                        <tr><td>EPS (évalué en CCF)</td><td>-</td><td>6</td><td><span class="highlight">6</span></td></tr>
+                        <tr><td>Spécialité non suivie en Term*</td><td>8</td><td>-</td><td><span class="highlight">8</span></td></tr>
+                        <tr><td>Ens. Moral et Civique (EMC)</td><td>1</td><td>1</td><td><span class="highlight">2</span></td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr style="background: #f0f7fb; font-weight: bold;">
+                            <td colspan="3">TOTAL CONTRÔLE CONTINU</td>
+                            <td>40</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="card" style="max-width: 350px;">
+                <h2 style="color:#2980b9;">Poids relatif (40 pts)</h2>
+                <canvas id="ccChart"></canvas>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            * Pour la filière STI2D, la spécialité de première non poursuivie en terminale est généralement "Innovation Technologique". Sa note est la moyenne de vos bulletins de l'année de première.
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Graphique Global ---
+    const ctxGlobal = document.getElementById('chartBac').getContext('2d');
+    new Chart(ctxGlobal, {
+        type: 'doughnut',
+        data: {
+            labels: ['Spécialités (32%)', 'Contrôle Continu (40%)', 'Grand Oral (12%)', 'Français 1ère (10%)', 'Philo (4%)', 'Maths 1ère (2%)'],
+            datasets: [{
+                data: [32, 40, 12, 10, 4, 2],
+                backgroundColor: ['#e74c3c', '#95a5a6', '#f1c40f', '#3498db', '#34495e', '#1abc9c'],
+                hoverOffset: 10
+            }]
+        },
+        options: { plugins: { legend: { position: 'bottom', labels: { padding: 20 } } } }
+    });
+
+    // --- Gestion du Popup ---
+    const modal = document.getElementById("popupCC");
+    let chartCC = null;
+
+    function openPopup() {
+        modal.style.display = "block";
+        // On initialise le graphique du popup seulement à l'ouverture pour éviter les bugs de rendu
+        if (!chartCC) {
+            const ctxCC = document.getElementById('ccChart').getContext('2d');
+            chartCC = new Chart(ctxCC, {
+                type: 'pie',
+                data: {
+                    labels: ['Spé 1ère (8)', 'H-G (6)', 'LVA (6)', 'LVB (6)', 'Maths (6)', 'EPS (6)', 'EMC (2)'],
+                    datasets: [{
+                        data: [8, 6, 6, 6, 6, 6, 2],
+                        backgroundColor: ['#e67e22', '#3498db', '#1abc9c', '#9b59b6', '#34495e', '#f1c40f', '#bdc3c7']
+                    }]
+                },
+                options: { plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+    }
+
+    function closePopup() {
+        modal.style.display = "none";
+    }
+
+    // Fermer si clic à l'extérieur
+    window.onclick = function(event) {
+        if (event.target == modal) { closePopup(); }
+    }
+</script>
+
+</body>
+</html>
