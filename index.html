@@ -93,7 +93,7 @@
             font-size: 1.2em;
         }
 
-        /* --- BANDEAU MATHS EXPERTES (NOUVEAU) --- */
+        /* --- BANDEAU MATHS EXPERTES --- */
         #expert-submenu {
             width: 100%;
             background-color: #f1f8e9;
@@ -245,12 +245,10 @@
     </div>
 
     <script>
-        // --- SÉCURITÉ : Affiche une erreur si le script plante ---
         window.onerror = function(message, source, lineno, colno, error) {
             alert("Erreur Script : " + message + "\nLigne : " + lineno);
         };
 
-        // --- DONNÉES ---
         const linksData = [
             // ALGEBRE
             { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", title: "Calculs (Algèbre Divers)", category: "Algèbre" },
@@ -261,7 +259,7 @@
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", title: "Second Degré (Étude Algébrique)", category: "Algèbre" },
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (QCM : Formes Quadratiques et Identités Remarquables)", category: "Algèbre" },
             
-            // MATHS EXPERTES - ARITHMETIQUE (Sous-catégorie)
+            // MATHS EXPERTES
             { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_1.html", title: "Divisibilité et Propriétés", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
             { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_2.html", title: "Division Euclidienne", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
             { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_3.html", title: "PGCD - Première Approche", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
@@ -269,11 +267,7 @@
             { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_5.html", title: "L'Équation Diopantienne", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
             { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_6.html", title: "Nombres Premiers et Décomposition", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
             { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/EUCLIDE_ETENDU.html", title: "Algorithme d'Euclide Étendu", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            
-            // MATHS EXPERTES - MATRICES
             { url: "", title: "Matrices", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            
-            // MATHS EXPERTES - NOMBRES COMPLEXES
             { url: "", title: "Nombres Complexes", category: "MATHS EXPERTES", subcategory: "NOMBRES COMPLEXES" },
 
             // ANALYSE
@@ -282,7 +276,7 @@
             { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", title: "Calculs de Nombre Dérivé", category: "Analyse" },
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/fonction_carree.html", title: "Fonction carrée", category: "Analyse"},
             
-            // GEOMETRIE & PROBA & JEUX:
+            // GEOMETRIE & PROBA & JEUX
             { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
             { url: "https://ldv78100ym-hub.github.io/PROBABILITES/", title: "Probabilités", category: "Probabilités" },
             { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", title: "Jeux Mathématiques", category: "JEUX" },
@@ -296,9 +290,11 @@
             { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/DEVELOPPEMENTS_FLASHCARDS.html", title: "Développements", category: "Flashcards" },
             { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/DROITES_FLASHCARDS.html", title: "Droites", category: "Flashcards" },
             { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/PRODUIT_SCALAIRE_FLASHCARDS.html", title: "Produit scalaire", category: "Flashcards" },
-        ];
 
-        // --- FONCTIONS ---
+            // NOUVELLE CATEGORIE : COEFFS BAC
+            { url: "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STI2D.html", title: "Coefficients Bac STI2D", category: "COEFFS BAC" },
+            { url: "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STL.html", title: "Coefficients Bac STL", category: "COEFFS BAC" }
+        ];
 
         function getIcon(cat) {
             if (cat === "Algèbre") return '➗';
@@ -309,62 +305,51 @@
             if (cat === "MATHS EXPERTES") return '⚛️';
             if (cat === "CPGE") return '🎓';
             if (cat === "Flashcards") return '⚡';
+            if (cat === "COEFFS BAC") return '📜';
             return '❓';
         }
 
-        // Fonction principale de navigation
         function goToCategory(categoryName) {
             const welcome = document.getElementById('welcome-view');
             const content = document.getElementById('content-view');
             const expertMenu = document.getElementById('expert-submenu');
             const title = document.getElementById('section-title');
             
-            // 1. Basculer l'affichage
             welcome.classList.add('hidden');
             content.classList.remove('hidden');
             
-            // 2. Mettre à jour les boutons actifs
             document.querySelectorAll('.breadcrumb-btn').forEach(btn => {
                 btn.classList.remove('active');
-                // Utiliser textContent ou innerText car innerHTML contient aussi la balise span
                 if(btn.textContent.includes(categoryName)) btn.classList.add('active');
             });
 
-            // 3. Titre
             title.textContent = categoryName;
 
-            // 4. Logique Spéciale : MATHS EXPERTES (garde le sous-menu)
             if (categoryName === "MATHS EXPERTES") {
                 expertMenu.classList.remove('hidden');
-                // Par défaut, cliquer sur le premier bouton (Arithmétique)
                 filterExpertLinks('ARITHMÉTIQUE');
             } else {
                 expertMenu.classList.add('hidden');
-                // Afficher tous les liens de la catégorie normale (y compris CPGE et Flashcards)
                 const links = linksData.filter(l => l.category === categoryName);
                 displayLinks(links);
             }
         }
 
-        // Fonction pour le sous-menu Expert
         function filterExpertLinks(subcategoryName) {
-            // Mettre à jour les boutons du sous-menu
             document.querySelectorAll('.expert-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.textContent === subcategoryName) btn.classList.add('active');
             });
 
-            // Filtrer les liens
             const links = linksData.filter(l => 
                 l.category === "MATHS EXPERTES" && l.subcategory === subcategoryName
             );
             displayLinks(links);
         }
 
-        // Affichage générique des liens
         function displayLinks(links) {
             const container = document.getElementById('links-container');
-            container.innerHTML = ''; // Vider
+            container.innerHTML = '';
 
             if (links.length === 0) {
                 container.innerHTML = '<p style="text-align:center; color:gray;">Aucun lien disponible pour cette section.</p>';
@@ -376,7 +361,6 @@
 
             links.forEach(link => {
                 const li = document.createElement('li');
-                // L'icône est déterminée par la catégorie, même pour les sous-catégories, c'est cohérent avec le design existant.
                 const icon = getIcon(link.category); 
                 li.innerHTML = `
                     <a href="${link.url}" class="link-button" target="_blank">
@@ -390,11 +374,9 @@
             container.appendChild(ul);
         }
 
-        // Initialisation au chargement
         window.addEventListener('DOMContentLoaded', () => {
             const breadcrumb = document.getElementById('breadcrumb');
-            // Ajout de "Flashcards" à la liste des catégories
-            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES", "CPGE", "Flashcards"];
+            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES", "CPGE", "Flashcards", "COEFFS BAC"];
 
             categories.forEach(cat => {
                 const btn = document.createElement('a');
@@ -410,10 +392,6 @@
                 breadcrumb.appendChild(btn);
             });
         });
-
     </script>
 </body>
 </html>
-
-
-
