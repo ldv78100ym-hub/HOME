@@ -93,8 +93,8 @@
             font-size: 1.2em;
         }
 
-        /* --- BANDEAU MATHS EXPERTES --- */
-        #expert-submenu {
+        /* --- BANDEAU SOUS-MENUS (MATHS EXPERTES, ANALYSE, ALGEBRE) --- */
+        #expert-submenu, #analyse-submenu, #algebre-submenu {
             width: 100%;
             background-color: #f1f8e9;
             border: 1px solid #c5e1a5;
@@ -238,6 +238,18 @@
                     <button class="expert-btn" onclick="filterExpertLinks('NOMBRES COMPLEXES')">NOMBRES COMPLEXES</button>
                 </div>
 
+                <div id="analyse-submenu" class="hidden">
+                    <button class="expert-btn" onclick="filterAnalyseLinks('FONCTIONS')">FONCTIONS</button>
+                    <button class="expert-btn" onclick="filterAnalyseLinks('DROITES')">DROITES</button>
+                    <button class="expert-btn" onclick="filterAnalyseLinks('SUITES NUMÉRIQUES')">SUITES NUMÉRIQUES</button>
+                </div>
+
+                 <div id="algebre-submenu" class="hidden">
+                    <button class="expert-btn" onclick="filterAlgebreLinks('CALCUL LITTÉRAL')">CALCUL LITTÉRAL</button>
+                    <button class="expert-btn" onclick="filterAlgebreLinks('SECOND DEGRÉ')">SECOND DEGRÉ</button>
+                    <button class="expert-btn" onclick="filterAlgebreLinks('OUTILS')">OUTILS</button>
+                </div>
+
                 <div id="links-container"></div>
             </div>
 
@@ -250,15 +262,15 @@
         };
 
         const linksData = [
-            // ALGEBRE
-            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", title: "Calculs (Algèbre Divers)", category: "Algèbre" },
-            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html", title: "Évolutions (Algèbre Divers)", category: "Algèbre" },
-            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/IDENTITES_REMARQUABLES.html", title: "Identités Remarquables (Algèbre Divers)", category: "Algèbre" },
-            { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre" },
-            { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", title: "Second Degré (Étude Algébrique)", category: "Algèbre" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (QCM : Formes Quadratiques et Identités Remarquables)", category: "Algèbre" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/SECOND_DEGRE_EXERCICE_APPLICATION.html", title: "Second Degré (Etude et Application)", category: "Algèbre" },
+            // ALGEBRE (DIVISÉE EN SOUS-CATÉGORIES)
+            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", title: "Calculs (Algèbre Divers)", category: "Algèbre", subcategory: "CALCUL LITTÉRAL" },
+            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html", title: "Évolutions (Algèbre Divers)", category: "Algèbre", subcategory: "OUTILS" },
+            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/IDENTITES_REMARQUABLES.html", title: "Identités Remarquables (Algèbre Divers)", category: "Algèbre", subcategory: "CALCUL LITTÉRAL" },
+            { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre", subcategory: "OUTILS" },
+            { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre", subcategory: "CALCUL LITTÉRAL" },
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", title: "Second Degré (Étude Algébrique)", category: "Algèbre", subcategory: "SECOND DEGRÉ" },
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (QCM : Formes Quadratiques et Identités Remarquables)", category: "Algèbre", subcategory: "SECOND DEGRÉ" },
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/SECOND_DEGRE_EXERCICE_APPLICATION.html", title: "Second Degré (Etude et Application)", category: "Algèbre", subcategory: "SECOND DEGRÉ" },
             
             // MATHS EXPERTES
             { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_1.html", title: "Divisibilité et Propriétés", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
@@ -279,14 +291,13 @@
             { url: "", title: "Nombres Complexes", category: "MATHS EXPERTES", subcategory: "NOMBRES COMPLEXES" },
 
             // ANALYSE
-            { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse" },
-            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse" },
-            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", title: "Calculs de Nombre Dérivé", category: "Analyse" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/fonction_carree.html", title: "Fonction carrée (Théorie)", category: "Analyse"},
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE.html", title: "Fonction du second degré (Théorie)", category: "Analyse"},
-            { url: "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/DEFINITIONS_SUITES_NUMERIQUES.html", title: "Suites numériques (Mode de définition)", category: "Analyse"},
-            { url: "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/VARIATION_SUITES_NUMERIQUES.html", title: "Suites numériques (Étude de la variation)", category: "Analyse"},
-            
+            { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse", subcategory: "DROITES" },
+            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse", subcategory: "FONCTIONS" },
+            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", title: "Calculs de Nombre Dérivé", category: "Analyse", subcategory: "FONCTIONS" },
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/fonction_carree.html", title: "Fonction carrée (Théorie)", category: "Analyse", subcategory: "FONCTIONS"},
+            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE.html", title: "Fonction du second degré (Théorie)", category: "Analyse", subcategory: "FONCTIONS"},
+            { url: "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/DEFINITIONS_SUITES_NUMERIQUES.html", title: "Suites numériques (Mode de définition)", category: "Analyse", subcategory: "SUITES NUMÉRIQUES"},
+            { url: "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/VARIATION_SUITES_NUMERIQUES.html", title: "Suites numériques (Étude de la variation)", category: "Analyse", subcategory: "SUITES NUMÉRIQUES"},
             
             // GEOMETRIE & PROBA & JEUX
             { url: "https://ldv78100ym-hub.github.io/TRIGONOMETRIE-/TRIGONOMETRIE_SYNTHESE.html", title: "Trigonométrie", category: "Géométrie" },
@@ -305,7 +316,7 @@
             { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/PRODUIT_SCALAIRE_FLASHCARDS.html", title: "Produit scalaire", category: "Flashcards" },
              { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/TRIGOMASTER.html", title: "Trigonométrie", category: "Flashcards" },
 
-            // NOUVELLE CATEGORIE : COEFFS BAC
+            // COEFFS BAC
             { url: "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STI2D.html", title: "Coefficients Bac STI2D", category: "COEFFS BAC" },
             { url: "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STL.html", title: "Coefficients Bac STL", category: "COEFFS BAC" }
         ];
@@ -320,14 +331,18 @@
             if (cat === "CPGE") return '🎓';
             if (cat === "Flashcards") return '⚡';
             if (cat === "COEFFS BAC") return '📜';
-            if (cat === "Suites") return '🁣🁤';
             return '❓';
         }
 
         function goToCategory(categoryName) {
             const welcome = document.getElementById('welcome-view');
             const content = document.getElementById('content-view');
+            
+            // Récupération des sous-menus
             const expertMenu = document.getElementById('expert-submenu');
+            const analyseMenu = document.getElementById('analyse-submenu');
+            const algebreMenu = document.getElementById('algebre-submenu');
+            
             const title = document.getElementById('section-title');
             
             welcome.classList.add('hidden');
@@ -340,25 +355,56 @@
 
             title.textContent = categoryName;
 
+            // Réinitialisation de l'affichage des sous-menus
+            expertMenu.classList.add('hidden');
+            analyseMenu.classList.add('hidden');
+            algebreMenu.classList.add('hidden');
+
+            // Logique d'affichage par catégorie
             if (categoryName === "MATHS EXPERTES") {
                 expertMenu.classList.remove('hidden');
                 filterExpertLinks('ARITHMÉTIQUE');
-            } else {
-                expertMenu.classList.add('hidden');
+            } 
+            else if (categoryName === "Analyse") {
+                analyseMenu.classList.remove('hidden');
+                filterAnalyseLinks('FONCTIONS');
+            } 
+            else if (categoryName === "Algèbre") {
+                algebreMenu.classList.remove('hidden');
+                filterAlgebreLinks('CALCUL LITTÉRAL'); // Vue par défaut
+            } 
+            else {
                 const links = linksData.filter(l => l.category === categoryName);
                 displayLinks(links);
             }
         }
 
+        // --- FONCTIONS DE FILTRE ---
+
         function filterExpertLinks(subcategoryName) {
-            document.querySelectorAll('.expert-btn').forEach(btn => {
+            document.querySelectorAll('#expert-submenu .expert-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.textContent === subcategoryName) btn.classList.add('active');
             });
+            const links = linksData.filter(l => l.category === "MATHS EXPERTES" && l.subcategory === subcategoryName);
+            displayLinks(links);
+        }
 
-            const links = linksData.filter(l => 
-                l.category === "MATHS EXPERTES" && l.subcategory === subcategoryName
-            );
+        function filterAnalyseLinks(subcategoryName) {
+            document.querySelectorAll('#analyse-submenu .expert-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.textContent === subcategoryName) btn.classList.add('active');
+            });
+            const links = linksData.filter(l => l.category === "Analyse" && l.subcategory === subcategoryName);
+            displayLinks(links);
+        }
+
+        function filterAlgebreLinks(subcategoryName) {
+            document.querySelectorAll('#algebre-submenu .expert-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.textContent === subcategoryName) btn.classList.add('active');
+            });
+            const links = linksData.filter(l => l.category === "Algèbre" && l.subcategory === subcategoryName);
             displayLinks(links);
         }
 
@@ -410,22 +456,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
