@@ -3,475 +3,813 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathématiques - Accueil Dynamique</title>
+    <title>Mathématiques - Portail Éducatif</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        /* --- VARIABLES ET RESET --- */
+        /* --- 1. VARIABLES & RESET --- */
         :root {
-            --primary-color: #4CAF50; 
-            --secondary-color: #607D8B;
-            --text-dark: #263238;
-            --container-bg: #ffffff;
-            --border-radius: 12px;
-            --shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --accent-color: #10b981;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
         }
 
+        * { box-sizing: border-box; outline: none; }
+        
         body {
-            font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 30px 0;
-            color: var(--text-dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex; 
-            justify-content: center;
-            align-items: flex-start;
-            background: linear-gradient(-45deg, #e0f2f1, #e3f2fd, #fce4ec, #fcfbe3); 
-            background-size: 400% 400%;
-            animation: backgroundTransition 15s ease infinite;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
         }
 
-        @keyframes backgroundTransition {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            max-width: 1000px;
-            width: 95%;
-            background-color: var(--container-bg);
-            padding: 40px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
+        /* --- 2. LAYOUT PRINCIPAL --- */
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #111827;
+            color: white;
             display: flex;
             flex-direction: column;
-            min-height: 70vh; 
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 100;
         }
 
-        /* --- NAVIGATION PRINCIPALE (FIL D'ARIANE) --- */
-        .breadcrumb {
+        .brand {
+            font-size: 1.4rem;
+            font-weight: 700;
             margin-bottom: 30px;
-            display: flex; 
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px; 
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .breadcrumb-btn {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            padding: 8px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 30px;
-            background-color: #ffffff;
+            gap: 10px;
+            color: var(--accent-color);
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            color: #d1d5db;
             text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 600;
-            cursor: pointer;
             transition: all 0.2s;
-            user-select: none;
+            cursor: pointer;
+            font-size: 0.95rem;
         }
 
-        .breadcrumb-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            background-color: #e8f5e9;
-            transform: translateY(-2px);
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+            padding-left: 18px;
         }
 
-        .breadcrumb-btn.active {
+        .nav-item.active {
             background-color: var(--primary-color);
             color: white;
-            border-color: var(--primary-color);
-        }
-
-        .breadcrumb-btn .icon-breadcrumb {
-            margin-right: 8px;
-            font-size: 1.2em;
-        }
-
-        /* --- BANDEAU SOUS-MENUS (MATHS EXPERTES, ANALYSE, ALGEBRE) --- */
-        #expert-submenu, #analyse-submenu, #algebre-submenu {
-            width: 100%;
-            background-color: #f1f8e9;
-            border: 1px solid #c5e1a5;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .expert-btn {
-            padding: 8px 20px;
-            background-color: white;
-            border: 2px solid #8bc34a;
-            color: #558b2f;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-
-        .expert-btn:hover, .expert-btn.active {
-            background-color: #8bc34a;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        /* --- CONTENU --- */
-        #display-area {
-            width: 100%;
-        }
-
-        .anim-container {
-            width: 100%;
-            max-width: 600px; 
-            margin: 0 auto;
-        }
-        
-        .anim-container video {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        #info-panel {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 1.1em;
-            color: var(--secondary-color);
-        }
-        
-        .info-line {
-            display: block;
-            margin-bottom: 5px;
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
-        h2 {
-            color: var(--secondary-color);
-            font-size: 1.6em;
+        .nav-item i { width: 25px; font-size: 1.1em; }
+
+        /* Contenu */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 40px;
+            position: relative;
+        }
+
+        header.top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1#page-title {
+            font-size: 2rem;
+            color: var(--text-main);
+            margin: 0;
+            position: relative;
+        }
+        
+        h1#page-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--primary-color);
+            margin-top: 8px;
+            border-radius: 2px;
+        }
+
+        /* --- 3. CONTENU DYNAMIQUE --- */
+
+        .welcome-screen {
+            text-align: center;
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            animation: fadeIn 0.6s ease;
+        }
+        
+        .welcome-video-container {
+            width: 100%;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-            border-left: 6px solid var(--primary-color);
-            padding-left: 15px;
+        }
+        
+        .welcome-video-container video { width: 100%; display: block; }
+
+        .subcategory-section {
+            margin-bottom: 40px;
+            animation: slideUp 0.4s ease forwards;
+            opacity: 0;
         }
 
-        .link-list {
-            list-style: none;
-            padding: 0;
+        .subcategory-title {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 4px solid var(--accent-color);
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 100%);
+            padding-top: 5px;
+            padding-bottom: 5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
+            gap: 20px;
         }
 
-        .link-button {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            border: 1px solid #eceff1;
-            border-radius: 10px; 
-            background-color: #ffffff;
+        /* --- CARTES & POPUP (TOOLTIP) --- */
+        .resource-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 20px;
             text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
-            transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            color: var(--text-main);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            align-items: flex-start;
+            position: relative; /* Nécessaire pour positionner le popup */
+            overflow: visible; /* Important pour que le popup dépasse */
         }
 
-        .link-button:hover {
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
             border-color: var(--primary-color);
-            transform: translateY(-2px);
-            color: var(--primary-color);
+            z-index: 10; /* Passe au-dessus des autres */
         }
 
-        .link-button .icon {
-            margin-right: 12px;
-            font-size: 1.4em;
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--border-color);
+            transition: background 0.3s;
+            border-radius: var(--radius) 0 0 var(--radius);
         }
 
-        /* Utilitaires */
+        .resource-card:hover::before {
+            background: var(--primary-color);
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .resource-card:hover .card-icon { color: var(--primary-color); }
+
+        .card-content { flex: 1; }
+        .card-title { font-weight: 600; margin-bottom: 5px; display: block; }
+        .card-meta { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* STYLE DU POPUP (TOOLTIP) */
+        .card-tooltip {
+            position: absolute;
+            bottom: 100%; /* Juste au-dessus de la carte */
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #1f2937; /* Fond sombre */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        /* Petite flèche en bas du popup */
+        .card-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        /* Affichage au survol */
+        .resource-card:hover .card-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+
+        /* Utilitaire */
         .hidden { display: none !important; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 200;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+            .main-content { padding: 20px; }
+            h1#page-title { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class="fas fa-cube"></i>
+            <span>Maths Portal</span>
+        </div>
+        <div id="nav-container">
+            </div>
         
-        <div id="breadcrumb" class="breadcrumb"></div>
+        <div style="margin-top: auto; padding-top: 20px; font-size: 0.8rem; color: #6b7280; text-align: center;">
+            Yann Merdy © 2025-2026<br>Première STL & STI2D<br>Maths Expertes & CPGE
+        </div>
+    </nav>
+
+    <main class="main-content">
         
-        <div id="display-area">
+        <header class="top-header">
+            <h1 id="page-title">Bienvenue</h1>
+        </header>
+
+        <div id="content-area">
             
-            <div id="welcome-view">
-                <div class="anim-container">
+            <div id="welcome-view" class="welcome-screen">
+                <div class="welcome-video-container">
                     <video autoplay loop muted playsinline>
                         <source src="MATHEMATIQUES.mp4" type="video/mp4">
-                        Votre navigateur ne supporte pas la balise vidéo.
+                        <div style="height: 300px; background: #eee; display: flex; align-items: center; justify-content: center; color: #999;">
+                            Vidéo de présentation
+                        </div>
                     </video>
                 </div>
-                <div id="info-panel">
-                    <span class="info-line">Auteur : Yann Merdy</span>
-                    <span class="info-line">Année 2025 - 2026</span>
-                    <span class="info-line">Première STL & STI2D</span>
-                    <span class="info-line">TRONC COMMUN & PCM</span>
-                </div>
+                <h2>Espace Mathématiques</h2>
+                <p>Sélectionnez une catégorie dans le menu de gauche pour accéder aux ressources.</p>
             </div>
 
-            <div id="content-view" class="hidden">
-                <h2 id="section-title"></h2>
-                
-                <div id="expert-submenu" class="hidden">
-                    <button class="expert-btn" onclick="filterExpertLinks('ARITHMÉTIQUE')">ARITHMÉTIQUE</button>
-                    <button class="expert-btn" onclick="filterExpertLinks('MATRICES')">MATRICES</button>
-                    <button class="expert-btn" onclick="filterExpertLinks('NOMBRES COMPLEXES')">NOMBRES COMPLEXES</button>
-                </div>
-
-                <div id="analyse-submenu" class="hidden">
-                    <button class="expert-btn" onclick="filterAnalyseLinks('FONCTIONS')">FONCTIONS</button>
-                    <button class="expert-btn" onclick="filterAnalyseLinks('DROITES')">DROITES</button>
-                    <button class="expert-btn" onclick="filterAnalyseLinks('SUITES NUMÉRIQUES')">SUITES NUMÉRIQUES</button>
-                </div>
-
-                 <div id="algebre-submenu" class="hidden">
-                    <button class="expert-btn" onclick="filterAlgebreLinks('CALCUL LITTÉRAL')">CALCUL LITTÉRAL</button>
-                    <button class="expert-btn" onclick="filterAlgebreLinks('SECOND DEGRÉ')">SECOND DEGRÉ</button>
-                    <button class="expert-btn" onclick="filterAlgebreLinks('OUTILS')">OUTILS</button>
-                </div>
-
-                <div id="links-container"></div>
-            </div>
+            <div id="category-view" class="hidden"></div>
 
         </div>
-    </div>
+    </main>
 
     <script>
-        window.onerror = function(message, source, lineno, colno, error) {
-            alert("Erreur Script : " + message + "\nLigne : " + lineno);
-        };
-
+        // --- DONNÉES AVEC CLASSES AJOUTÉES ---
         const linksData = [
-            // ALGEBRE (DIVISÉE EN SOUS-CATÉGORIES)
-            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", title: "Calculs (Algèbre Divers)", category: "Algèbre", subcategory: "CALCUL LITTÉRAL" },
-            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html", title: "Évolutions (Algèbre Divers)", category: "Algèbre", subcategory: "OUTILS" },
-            { url: "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/IDENTITES_REMARQUABLES.html", title: "Identités Remarquables (Algèbre Divers)", category: "Algèbre", subcategory: "CALCUL LITTÉRAL" },
-            { url: "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", title: "Tableaux de Signes", category: "Algèbre", subcategory: "OUTILS" },
-            { url: "https://ldv78100ym-hub.github.io/FACTORISATIONS/", title: "Factorisations", category: "Algèbre", subcategory: "CALCUL LITTÉRAL" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", title: "Second Degré (Étude Algébrique)", category: "Algèbre", subcategory: "SECOND DEGRÉ" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (QCM : Formes Quadratiques et Identités Remarquables)", category: "Algèbre", subcategory: "SECOND DEGRÉ" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/SECOND_DEGRE_EXERCICE_APPLICATION.html", title: "Second Degré (Etude et Application)", category: "Algèbre", subcategory: "SECOND DEGRÉ" },
-            
-            // MATHS EXPERTES
-            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_1.html", title: "Divisibilité et Propriétés", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_2.html", title: "Division Euclidienne", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_3.html", title: "PGCD - Première Approche", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_4.html", title: "Algorithme d'Euclide et Théorème de Bézout", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_5.html", title: "L'Équation Diopantienne", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_6.html", title: "Nombres Premiers et Décomposition", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            { url: "https://ldv78100ym-hub.github.io/ARITHMETIQUE/EUCLIDE_ETENDU.html", title: "Algorithme d'Euclide Étendu", category: "MATHS EXPERTES", subcategory: "ARITHMÉTIQUE" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_COURS.html", title: "Graphes - Cours", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHE_INTERACTIF.html", title: "Graphes - Analyseur de Graphes", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE.html", title: "Graphes - Arithmétique", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE_V2.html", title: "Graphes - Générateur universel de Collatz", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_C.html", title: "Graphes - Plan complexe", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/MATRICE_CHAINE_DE_MARKOV.html", title: "Graphes - Chaînes de Markov", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/LE_PATROUILLEUR_DE_L_ENTREPOT.html", title: "Graphes - Problème de cycle eulérien dans un réseau de couloirs", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "https://ldv78100ym-hub.github.io/GRAPHES/INTERPOLATION_DE_VANDERMONDE.html", title: "Graphes - Détermination d'une trajectoire polynomiale précise passant par des balises GPS", category: "MATHS EXPERTES", subcategory: "MATRICES" },
-            { url: "", title: "Nombres Complexes", category: "MATHS EXPERTES", subcategory: "NOMBRES COMPLEXES" },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html",
+        "title": "Calculs (Algèbre Divers)",
+        "category": "Algèbre",
+        "subcategory": "Calcul Littéral",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html",
+        "title": "Évolutions (Algèbre Divers)",
+        "category": "Algèbre",
+        "subcategory": "Outils",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/IDENTITES_REMARQUABLES.html",
+        "title": "Identités Remarquables",
+        "category": "Algèbre",
+        "subcategory": "Calcul Littéral",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/",
+        "title": "Tableaux de Signes",
+        "category": "Algèbre",
+        "subcategory": "Outils",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/FACTORISATIONS/",
+        "title": "Factorisations",
+        "category": "Algèbre",
+        "subcategory": "Calcul Littéral",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html",
+        "title": "Second Degré (Étude Algébrique)",
+        "category": "Algèbre",
+        "subcategory": "Second Degré",
+        "classes": "1ère STL / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html",
+        "title": "QCM : Formes Quadratiques",
+        "category": "Algèbre",
+        "subcategory": "Second Degré",
+        "classes": "1ère STL / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/SECOND_DEGRE_EXERCICE_APPLICATION.html",
+        "title": "Second Degré (Application)",
+        "category": "Algèbre",
+        "subcategory": "Second Degré",
+        "classes": "1ère STL / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_1.html",
+        "title": "Divisibilité et Propriétés",
+        "category": "Maths Expertes",
+        "subcategory": "Arithmétique",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_2.html",
+        "title": "Division Euclidienne",
+        "category": "Maths Expertes",
+        "subcategory": "Arithmétique",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_3.html",
+        "title": "PGCD - Première Approche",
+        "category": "Maths Expertes",
+        "subcategory": "Arithmétique",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_4.html",
+        "title": "Algorithme d'Euclide / Bézout",
+        "category": "Maths Expertes",
+        "subcategory": "Arithmétique",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_5.html",
+        "title": "L'Équation Diopantienne",
+        "category": "Maths Expertes",
+        "subcategory": "Arithmétique",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_6.html",
+        "title": "Nombres Premiers",
+        "category": "Maths Expertes",
+        "subcategory": "Arithmétique",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/EUCLIDE_ETENDU.html",
+        "title": "Algorithme d'Euclide Étendu",
+        "category": "Maths Expertes",
+        "subcategory": "Arithmétique",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_COURS.html",
+        "title": "Graphes - Cours",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHE_INTERACTIF.html",
+        "title": "Analyseur de Graphes",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE.html",
+        "title": "Graphes - Arithmétique",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE_V2.html",
+        "title": "Générateur de Collatz",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_C.html",
+        "title": "Graphes - Plan complexe",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/MATRICE_CHAINE_DE_MARKOV.html",
+        "title": "Chaînes de Markov",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/LE_PATROUILLEUR_DE_L_ENTREPOT.html",
+        "title": "Cycle eulérien",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/GRAPHES/INTERPOLATION_DE_VANDERMONDE.html",
+        "title": "Interpolation de Vandermonde",
+        "category": "Maths Expertes",
+        "subcategory": "Matrices & Graphes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "#",
+        "title": "Introduction aux complexes",
+        "category": "Maths Expertes",
+        "subcategory": "Nombres Complexes",
+        "classes": "Terminale Maths Exp"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/DROITES",
+        "title": "Droites (Géométrie Analytique)",
+        "category": "Analyse",
+        "subcategory": "Droites",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/MONOTONIE/FONCTIONS_MONOTONES.html",
+        "title": "Fonctions monotônes",
+        "category": "Analyse",
+        "subcategory": "Fonctions Monotones",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/",
+        "title": "Nombre Dérivé (Cours)",
+        "category": "Analyse",
+        "subcategory": "Nombre Dérivé et Fonction Dérivée",
+        "classes": "1ère STL / 1ère STI2D A "
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html",
+        "title": "Calculs de Nombre Dérivé",
+        "category": "Analyse",
+        "subcategory": "Nombre Dérivé et Fonction Dérivée",
+        "classes": "1ère STL / 1ère STI2D A "
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVEE_POLYNOMES.html",
+        "title": "Dérivation polynômes",
+        "category": "Analyse",
+        "subcategory": "Nombre Dérivé et Fonction Dérivée",
+        "classes": "1 STL"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/fonction_carree.html",
+        "title": "Fonction carrée (Théorie)",
+        "category": "Analyse",
+        "subcategory": "Second Degré",
+        "classes": "1ère STL / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE.html",
+        "title": "Fonction du second degré",
+        "category": "Analyse",
+        "subcategory": "Second Degré",
+        "classes": "1ère STL / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE_EXERCICES_GUIDES.html",
+        "title": "Second Degré (Exercices guidés)",
+        "category": "Analyse",
+        "subcategory": "Second Degré",
+        "classes": "1ère STL / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/DEFINITIONS_SUITES_NUMERIQUES.html",
+        "title": "Suites (Mode de définition)",
+        "category": "Analyse",
+        "subcategory": "Suites Numériques",
+        "classes": "1ère STL / 1ère STI2D A"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/VARIATION_SUITES_NUMERIQUES.html",
+        "title": "Suites (Étude de variation)",
+        "category": "Analyse",
+        "subcategory": "Suites Numériques",
+        "classes": "1ère STL / 1ère STI2D A"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/TRIGONOMETRIE-/TRIGONOMETRIE_SYNTHESE.html",
+        "title": "Trigonométrie (Synthèse)",
+        "category": "Géométrie",
+        "subcategory": "Trigonométrie",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/",
+        "title": "Produit Scalaire",
+        "category": "Géométrie",
+        "subcategory": "Vecteurs",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/FORME_ALGEBRIQUE.html",
+        "title": "STI2D - Nombres complexes",
+        "category": "Géométrie",
+        "subcategory": "Nombres Complexes",
+        "classes": "1ère STI2D A "
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES.html",
+        "title": "STI2D - Exercices Complexes",
+        "category": "Géométrie",
+        "subcategory": "Nombres Complexes",
+        "classes": "1ère STI2D A"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/PROBABILITES/",
+        "title": "Probabilités Générales",
+        "category": "Probabilités",
+        "subcategory": "Général",
+        "classes": "1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html",
+        "title": "Jeux Mathématiques",
+        "category": "Jeux",
+        "subcategory": "Ludique",
+        "classes": "Tous niveaux"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html",
+        "title": "Quête Produit Scalaire",
+        "category": "Jeux",
+        "subcategory": "Ludique",
+        "classes": "1ère Spé"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/CPGE/RAISONNEMENT_PAR_L_ABSURDE.html",
+        "title": "Raisonnement par l'Absurde",
+        "category": "CPGE",
+        "subcategory": "Logique",
+        "classes": "CPGE"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/FACTORISATIONS_FLASHCARDS.html",
+        "title": "Flashcards Factorisations",
+        "category": "Flashcards",
+        "subcategory": "Révisions",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/DEVELOPPEMENTS_FLASHCARDS.html",
+        "title": "Flashcards Développements",
+        "category": "Flashcards",
+        "subcategory": "Révisions",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/DROITES_FLASHCARDS.html",
+        "title": "Flashcards Droites",
+        "category": "Flashcards",
+        "subcategory": "Révisions",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/PRODUIT_SCALAIRE_FLASHCARDS.html",
+        "title": "Flashcards Produit Scalaire",
+        "category": "Flashcards",
+        "subcategory": "Révisions",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/TRIGOMASTER.html",
+        "title": "TrigoMaster",
+        "category": "Flashcards",
+        "subcategory": "Révisions",
+        "classes": "1ère STL / 1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STI2D.html",
+        "title": "Coefficients Bac STI2D",
+        "category": "Coefficients",
+        "subcategory": "Examens",
+        "classes": "1ère STI2D A / 1ère STLI2D"
+    },
+    {
+        "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STL.html",
+        "title": "Coefficients Bac STL",
+        "category": "Coefficients",
+        "subcategory": "Examens",
+        "classes": "1ère STL"
+    }
+];
 
-            // ANALYSE
-            { url: "https://ldv78100ym-hub.github.io/DROITES", title: "Droites (Géométrie Analytique)", category: "Analyse", subcategory: "DROITES" },
-            { url: "https://ldv78100ym-hub.github.io/MONOTONIE/FONCTIONS_MONOTONES.html", title: "Fonctions monotônes", category: "Analyse", subcategory: "FONCTIONS" },
-            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", title: "Nombre Dérivé", category: "Analyse", subcategory: "FONCTIONS" },
-            { url: "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", title: "Calculs de Nombre Dérivé", category: "Analyse", subcategory: "FONCTIONS" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/fonction_carree.html", title: "Fonction carrée (Théorie)", category: "Analyse", subcategory: "FONCTIONS"},
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE.html", title: "Fonction du second degré (Théorie)", category: "Analyse", subcategory: "FONCTIONS"},
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", title: "Second Degré (Étude Algébrique)", category: "Analyse", subcategory: "FONCTIONS" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", title: "Second Degré (QCM : Formes Quadratiques et Identités Remarquables)", category: "Analyse", subcategory: "FONCTIONS" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/SECOND_DEGRE_EXERCICE_APPLICATION.html", title: "Second Degré (Etude et Application)", category: "Analyse", subcategory: "FONCTIONS" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE_EXERCICES_GUIDES.html", title: "Second Degré (Exercices guidés)", category: "Analyse", subcategory: "FONCTIONS" },
-            { url: "https://ldv78100ym-hub.github.io/DERIVATION/DERIVEE_POLYNOMES.html", title: "Dérivation de fonctions polynomiales (degré 0 à 3)", category: "Analyse", subcategory: "FONCTIONS"},
-            { url: "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/DEFINITIONS_SUITES_NUMERIQUES.html", title: "Suites numériques (Mode de définition)", category: "Analyse", subcategory: "SUITES NUMÉRIQUES"},
-            { url: "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/VARIATION_SUITES_NUMERIQUES.html", title: "Suites numériques (Étude de la variation)", category: "Analyse", subcategory: "SUITES NUMÉRIQUES"},
-            
-            // GEOMETRIE & PROBA & JEUX
-            { url: "https://ldv78100ym-hub.github.io/TRIGONOMETRIE-/TRIGONOMETRIE_SYNTHESE.html", title: "Trigonométrie", category: "Géométrie" },
-            { url: "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", title: "Produit Scalaire", category: "Géométrie" },
-            { url: "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/FORME_ALGEBRIQUE.html", title: "<strong>STI2D</strong> Nombres complexes (Forme algébrique)", category: "Géométrie" },
-             { url: "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES.html", title: "<strong>STI2D</strong> Nombres complexes (Forme algébrique/Exercices)", category: "Géométrie" },
-            { url: "https://ldv78100ym-hub.github.io/PROBABILITES/", title: "Probabilités", category: "Probabilités" },
-            { url: "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", title: "Jeux Mathématiques", category: "JEUX" },
-            { url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", title: "Quête Produit Scalaire", category: "JEUX" },
-            
-            // CPGE
-            { url: "https://ldv78100ym-hub.github.io/CPGE/RAISONNEMENT_PAR_L_ABSURDE.html", title: "Raisonnement par l'Absurde", category: "CPGE" },
-            
-            // FLASHCARDS
-            { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/FACTORISATIONS_FLASHCARDS.html", title: "Factorisations", category: "Flashcards" },
-            { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/DEVELOPPEMENTS_FLASHCARDS.html", title: "Développements", category: "Flashcards" },
-            { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/DROITES_FLASHCARDS.html", title: "Droites", category: "Flashcards" },
-            { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/PRODUIT_SCALAIRE_FLASHCARDS.html", title: "Produit scalaire", category: "Flashcards" },
-             { url: "https://ldv78100ym-hub.github.io/FLASHCARDS/TRIGOMASTER.html", title: "Trigonométrie", category: "Flashcards" },
-
-            // COEFFS BAC
-            { url: "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STI2D.html", title: "Coefficients Bac STI2D", category: "COEFFS BAC" },
-            { url: "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STL.html", title: "Coefficients Bac STL", category: "COEFFS BAC" }
+        const categoryConfig = [
+            { name: "Algèbre", icon: "fas fa-square-root-alt" },
+            { name: "Analyse", icon: "fas fa-chart-line" },
+            { name: "Géométrie", icon: "fas fa-shapes" },
+            { name: "Probabilités", icon: "fas fa-dice" },
+            { name: "Maths Expertes", icon: "fas fa-atom" },
+            { name: "CPGE", icon: "fas fa-university" },
+            { name: "Flashcards", icon: "fas fa-bolt" },
+            { name: "Jeux", icon: "fas fa-gamepad" },
+            { name: "Coefficients", icon: "fas fa-file-alt" }
         ];
 
-        function getIcon(cat) {
-            if (cat === "Algèbre") return '➗';
-            if (cat === "Analyse") return '📈';
-            if (cat === "Géométrie") return '📐';
-            if (cat === "Probabilités") return '🎲';
-            if (cat === "JEUX") return '🎮'; 
-            if (cat === "MATHS EXPERTES") return '⚛️';
-            if (cat === "CPGE") return '🎓';
-            if (cat === "Flashcards") return '⚡';
-            if (cat === "COEFFS BAC") return '📜';
-            return '❓';
+        // --- FONCTIONS ---
+
+        function initSidebar() {
+            const navContainer = document.getElementById('nav-container');
+            
+            const homeBtn = document.createElement('div');
+            homeBtn.className = 'nav-item active';
+            homeBtn.innerHTML = '<i class="fas fa-home"></i> Accueil';
+            homeBtn.onclick = () => showWelcome();
+            navContainer.appendChild(homeBtn);
+
+            categoryConfig.forEach(cat => {
+                const btn = document.createElement('div');
+                btn.className = 'nav-item';
+                btn.innerHTML = `<i class="${cat.icon}"></i> ${cat.name}`;
+                btn.onclick = (e) => loadCategory(cat.name, e.currentTarget);
+                navContainer.appendChild(btn);
+            });
         }
 
-        function goToCategory(categoryName) {
-            const welcome = document.getElementById('welcome-view');
-            const content = document.getElementById('content-view');
+        function showWelcome() {
+            document.getElementById('welcome-view').classList.remove('hidden');
+            document.getElementById('category-view').classList.add('hidden');
+            document.getElementById('page-title').textContent = "Bienvenue";
             
-            // Récupération des sous-menus
-            const expertMenu = document.getElementById('expert-submenu');
-            const analyseMenu = document.getElementById('analyse-submenu');
-            const algebreMenu = document.getElementById('algebre-submenu');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelector('.nav-item').classList.add('active');
             
-            const title = document.getElementById('section-title');
-            
-            welcome.classList.add('hidden');
-            content.classList.remove('hidden');
-            
-            document.querySelectorAll('.breadcrumb-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.textContent.includes(categoryName)) btn.classList.add('active');
-            });
+            closeSidebarMobile();
+        }
 
-            title.textContent = categoryName;
+        function loadCategory(categoryName, clickedBtn) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(clickedBtn) clickedBtn.classList.add('active');
 
-            // Réinitialisation de l'affichage des sous-menus
-            expertMenu.classList.add('hidden');
-            analyseMenu.classList.add('hidden');
-            algebreMenu.classList.add('hidden');
+            document.getElementById('welcome-view').classList.add('hidden');
+            const view = document.getElementById('category-view');
+            view.classList.remove('hidden');
+            document.getElementById('page-title').textContent = categoryName;
 
-            // Logique d'affichage par catégorie
-            if (categoryName === "MATHS EXPERTES") {
-                expertMenu.classList.remove('hidden');
-                filterExpertLinks('ARITHMÉTIQUE');
-            } 
-            else if (categoryName === "Analyse") {
-                analyseMenu.classList.remove('hidden');
-                filterAnalyseLinks('FONCTIONS');
-            } 
-            else if (categoryName === "Algèbre") {
-                algebreMenu.classList.remove('hidden');
-                filterAlgebreLinks('CALCUL LITTÉRAL'); // Vue par défaut
-            } 
-            else {
-                const links = linksData.filter(l => l.category === categoryName);
-                displayLinks(links);
+            const links = linksData.filter(l => l.category === categoryName);
+            
+            const grouped = links.reduce((acc, link) => {
+                const sub = link.subcategory || "Général";
+                if (!acc[sub]) acc[sub] = [];
+                acc[sub].push(link);
+                return acc;
+            }, {});
+
+            view.innerHTML = ''; 
+
+            if (Object.keys(grouped).length === 0) {
+                view.innerHTML = '<p class="text-muted">Aucun contenu disponible pour le moment.</p>';
+            } else {
+                for (const [subcat, items] of Object.entries(grouped)) {
+                    const section = document.createElement('div');
+                    section.className = 'subcategory-section';
+                    section.innerHTML = `<div class="subcategory-title">${subcat}</div>`;
+                    
+                    const grid = document.createElement('div');
+                    grid.className = 'cards-grid';
+                    
+                    items.forEach((item, index) => {
+                        const card = document.createElement('a');
+                        card.href = item.url;
+                        card.target = "_blank";
+                        card.className = 'resource-card';
+                        card.style.animationDelay = `${index * 0.05}s`;
+                        
+                        let iconClass = "fas fa-link";
+                        if(item.title.toLowerCase().includes("cours")) iconClass = "fas fa-book-open";
+                        if(item.title.toLowerCase().includes("exercice")) iconClass = "fas fa-pencil-alt";
+                        if(item.title.toLowerCase().includes("vidéo")) iconClass = "fas fa-play-circle";
+                        if(item.title.toLowerCase().includes("qcm")) iconClass = "fas fa-check-square";
+                        
+                        // Gestion de la classe par défaut si non spécifiée
+                        const classesConcerned = item.classes || "1ère & Terminale";
+
+                        card.innerHTML = `
+                            <div class="card-tooltip">Classe : ${classesConcerned}</div>
+                            <i class="card-icon ${iconClass}"></i>
+                            <div class="card-content">
+                                <span class="card-title">${item.title}</span>
+                                <span class="card-meta">Cliquez pour ouvrir</span>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+
+                    section.appendChild(grid);
+                    view.appendChild(section);
+                }
             }
+            
+            closeSidebarMobile();
         }
 
-        // --- FONCTIONS DE FILTRE ---
-
-        function filterExpertLinks(subcategoryName) {
-            document.querySelectorAll('#expert-submenu .expert-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.textContent === subcategoryName) btn.classList.add('active');
-            });
-            const links = linksData.filter(l => l.category === "MATHS EXPERTES" && l.subcategory === subcategoryName);
-            displayLinks(links);
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
         }
-
-        function filterAnalyseLinks(subcategoryName) {
-            document.querySelectorAll('#analyse-submenu .expert-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.textContent === subcategoryName) btn.classList.add('active');
-            });
-            const links = linksData.filter(l => l.category === "Analyse" && l.subcategory === subcategoryName);
-            displayLinks(links);
-        }
-
-        function filterAlgebreLinks(subcategoryName) {
-            document.querySelectorAll('#algebre-submenu .expert-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.textContent === subcategoryName) btn.classList.add('active');
-            });
-            const links = linksData.filter(l => l.category === "Algèbre" && l.subcategory === subcategoryName);
-            displayLinks(links);
-        }
-
-        function displayLinks(links) {
-            const container = document.getElementById('links-container');
-            container.innerHTML = '';
-
-            if (links.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:gray;">Aucun lien disponible pour cette section.</p>';
-                return;
-            }
-
-            const ul = document.createElement('ul');
-            ul.className = 'link-list';
-
-            links.forEach(link => {
-                const li = document.createElement('li');
-                const icon = getIcon(link.category); 
-                li.innerHTML = `
-                    <a href="${link.url}" class="link-button" target="_blank">
-                        <span class="icon">${icon}</span>
-                        <span>${link.title}</span>
-                    </a>
-                `;
-                ul.appendChild(li);
-            });
-
-            container.appendChild(ul);
+        function closeSidebarMobile() {
+            document.getElementById('sidebar').classList.remove('open');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            const breadcrumb = document.getElementById('breadcrumb');
-            const categories = ["Algèbre", "Analyse", "Géométrie", "Probabilités", "JEUX", "MATHS EXPERTES", "CPGE", "Flashcards", "COEFFS BAC"];
-
-            categories.forEach(cat => {
-                const btn = document.createElement('a');
-                btn.className = 'breadcrumb-btn';
-                btn.href = "#";
-                btn.innerHTML = `<span class="icon-breadcrumb">${getIcon(cat)}</span> ${cat}`;
-                
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    goToCategory(cat);
-                });
-
-                breadcrumb.appendChild(btn);
-            });
+            initSidebar();
         });
+
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
