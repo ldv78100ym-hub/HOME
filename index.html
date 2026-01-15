@@ -284,6 +284,81 @@
             cursor: pointer;
         }
 
+        /* --- STYLES POUR LA MODALE PROMO (AJOUTÉ) --- */
+        .promo-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .promo-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 10px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.5s ease;
+            text-align: center;
+        }
+
+        .promo-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+
+        .promo-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+
+        .promo-btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .promo-btn:hover {
+            background-color: #1e40af;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
@@ -299,6 +374,17 @@
 </head>
 <body>
 
+    <div id="promoOverlay" class="promo-overlay">
+        <div class="promo-modal">
+            <button class="promo-close" onclick="closePromo()"><i class="fas fa-times"></i></button>
+            <a href="https://www.safehelp.website" target="_blank">
+                <img src="image_880347.png" alt="SafeHelp Détection d'écart de trajet" class="promo-image">
+            </a>
+            <a href="https://www.safehelp.website" target="_blank" class="promo-btn">
+                Découvrir SafeHelp
+            </a>
+        </div>
+    </div>
     <button class="mobile-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </button>
@@ -825,6 +911,11 @@
         }
         function closeSidebarMobile() {
             document.getElementById('sidebar').classList.remove('open');
+        }
+
+        /* --- FONCTION DE FERMETURE DE LA MODALE PROMO --- */
+        function closePromo() {
+            document.getElementById('promoOverlay').style.display = 'none';
         }
 
         window.addEventListener('DOMContentLoaded', () => {
