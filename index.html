@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
     <title>Constellation Mathématique • Yann Merdy (M.À.J : 17/04/2026)</title>
     <script type="importmap">
         {
@@ -14,17 +14,18 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* === BASE STYLES (déjà responsive-friendly) === */
+        /* === STYLES GLOBAUX (responsive & tactile) === */
         body {
             margin: 0;
             overflow: hidden;
             font-family: 'Segoe UI', 'Inter', sans-serif;
             background: #0b1a2a;
             color: white;
+            touch-action: pan-x pan-y;
         }
         canvas { 
             display: block; 
-            touch-action: none;  /* évite le scroll pendant l'interaction 3D sur mobile */
+            touch-action: none;
         }
         #info {
             position: absolute;
@@ -38,7 +39,6 @@
             box-shadow: 0 0 30px rgba(100, 220, 255, 0.4);
             pointer-events: none;
             color: #e6f7ff;
-            transition: all 0.2s;
         }
         #level-indicator {
             position: absolute;
@@ -52,7 +52,6 @@
             color: #f0e6ff;
             font-weight: 600;
             pointer-events: none;
-            transition: all 0.2s;
         }
         #controls {
             position: absolute;
@@ -80,6 +79,7 @@
             gap: 10px;
             pointer-events: auto;
             white-space: nowrap;
+            touch-action: manipulation;
         }
         .ctrl-btn:hover {
             background: #5ec8ff;
@@ -117,6 +117,7 @@
             align-items: center;
             justify-content: center;
             pointer-events: auto;
+            touch-action: manipulation;
         }
         .acc-btn:hover {
             border-color: #7ae4ff;
@@ -127,10 +128,11 @@
             position: fixed; inset: 0;
             background: rgba(2, 15, 30, 0.8);
             backdrop-filter: blur(15px);
-            z-index: 9999;
+            z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: auto;
         }
         .modal-box {
             background: rgba(20, 45, 70, 0.8);
@@ -143,25 +145,32 @@
             color: #e0f2fe;
             box-shadow: 0 0 60px #7ae4ff33;
             position: relative;
+            pointer-events: auto;
         }
         .modal-close {
             position: absolute;
-            top: -15px; right: -15px;
+            top: -18px; right: -18px;
             background: #102a3c;
-            border: 1px solid #ff7b9c;
+            border: 2px solid #ff7b9c;
             color: #ffb0c3;
-            width: 42px; height: 42px;
+            width: 52px; height: 52px;
             border-radius: 50%;
-            font-size: 1.3rem;
+            font-size: 1.8rem;
             cursor: pointer;
-            transition: 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 10001;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+            transition: 0.2s;
+            pointer-events: auto;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         .modal-close:hover {
             background: #ff7b9c;
             color: #0a1e2c;
+            transform: scale(1.05);
         }
         .hidden { display: none !important; }
         .promo-image { width: 100%; border-radius: 18px; border: 1px solid #7ae4ff; }
@@ -184,6 +193,8 @@
             border: 1px solid #7ae4ff;
             transition: 0.2s;
             cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .node-label:hover {
             background: #7ae4ff;
@@ -191,163 +202,27 @@
             box-shadow: 0 0 35px #7ae4ff;
             transform: scale(1.05);
         }
-        .subcat-label {
-            border-color: #c58aff;
-            text-shadow: 0 0 20px #c58aff;
-        }
-        .doc-label {
-            border-color: #8febb0;
-            font-size: 13px;
-            padding: 4px 12px;
-            background: rgba(20, 60, 50, 0.7);
-        }
+        .subcat-label { border-color: #c58aff; }
+        .doc-label { border-color: #8febb0; font-size: 13px; padding: 4px 12px; background: rgba(20, 60, 50, 0.7); }
         body.dys-mode { font-family: 'Comic Sans MS', 'OpenDyslexic', sans-serif !important; }
-        body.vision-mode {
-            filter: contrast(1.6) brightness(1.2);
-        }
+        body.vision-mode { filter: contrast(1.6) brightness(1.2); }
         body.vision-mode .ctrl-btn { background: black; border-color: yellow; color: yellow; }
 
-        /* === RESPONSIVE ENHANCEMENTS === */
+        /* Responsive */
         @media screen and (max-width: 768px) {
-            #info {
-                top: 12px;
-                left: 12px;
-                padding: 8px 16px;
-                font-size: 14px;
-                border-radius: 30px;
-            }
-            #level-indicator {
-                top: 12px;
-                right: 12px;
-                padding: 6px 14px;
-                font-size: 13px;
-            }
-            .ctrl-btn {
-                padding: 10px 18px;
-                font-size: 0.95rem;
-                gap: 8px;
-            }
-            #controls {
-                bottom: 20px;
-                left: 12px;
-                gap: 10px;
-            }
-            #accessibility-panel {
-                bottom: 20px;
-                right: 12px;
-                gap: 8px;
-            }
-            .acc-btn {
-                width: 48px;
-                height: 48px;
-                font-size: 1.3rem;
-            }
-            .node-label {
-                font-size: 12px;
-                padding: 5px 12px;
-                white-space: nowrap;
-            }
-            .doc-label {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-            .modal-box {
-                padding: 24px 20px;
-                max-width: 90%;
-                border-radius: 24px;
-            }
-            .modal-close {
-                top: -10px;
-                right: -10px;
-                width: 38px;
-                height: 38px;
-                font-size: 1.2rem;
-            }
-            .promo-btn {
-                padding: 12px;
-                font-size: 15px;
-            }
+            #info { top: 12px; left: 12px; padding: 8px 16px; font-size: 14px; }
+            #level-indicator { top: 12px; right: 12px; padding: 6px 14px; font-size: 13px; }
+            .ctrl-btn { padding: 10px 18px; font-size: 0.95rem; }
+            #controls { bottom: 20px; left: 12px; gap: 10px; }
+            #accessibility-panel { bottom: 20px; right: 12px; gap: 8px; }
+            .acc-btn { width: 48px; height: 48px; font-size: 1.3rem; }
+            .node-label { font-size: 12px; padding: 5px 12px; }
+            .modal-close { width: 48px; height: 48px; font-size: 1.6rem; top: -16px; right: -16px; }
         }
-
         @media screen and (max-width: 480px) {
-            #info {
-                padding: 6px 12px;
-                font-size: 13px;
-                backdrop-filter: blur(8px);
-            }
-            /* Sur très petit écran, on peut masquer le texte long et ne garder que l'icône */
-            #info span {
-                display: inline; /* garder lisible mais on peut réduire */
-            }
-            #level-indicator {
-                padding: 5px 10px;
-                font-size: 11px;
-            }
-            .ctrl-btn {
-                padding: 8px 14px;
-                font-size: 0.85rem;
-                border-radius: 30px;
-                gap: 6px;
-            }
-            #controls {
-                gap: 8px;
-                flex-wrap: wrap;
-                max-width: calc(100% - 24px);
-            }
-            .acc-btn {
-                width: 42px;
-                height: 42px;
-                font-size: 1.2rem;
-                border-radius: 25px;
-            }
-            #accessibility-panel {
-                gap: 6px;
-            }
-            .node-label {
-                font-size: 11px;
-                padding: 4px 10px;
-                max-width: 140px;
-                white-space: normal;  /* autoriser le retour à la ligne si nécessaire */
-                text-align: center;
-                line-height: 1.3;
-            }
-            .modal-box {
-                padding: 20px 16px;
-            }
-            .modal-box h2 {
-                font-size: 1.4rem;
-            }
-            .promo-btn {
-                font-size: 14px;
-                padding: 10px;
-            }
-        }
-
-        /* Optimisation pour les très petits écrans (ex: iPhone SE) */
-        @media screen and (max-width: 380px) {
-            #info span {
-                display: none;  /* ne garder que l'icône */
-            }
-            #info i {
-                margin-right: 0 !important;
-            }
-            #level-indicator i {
-                margin-right: 4px;
-            }
-            .ctrl-btn i {
-                margin-right: 0;
-            }
-            .ctrl-btn {
-                padding: 6px 12px;
-            }
-            #backBtn span, .ctrl-btn span {
-                /* on garde le texte pour l'accessibilité, mais on peut le raccourcir visuellement */
-            }
-        }
-
-        /* Amélioration du confort tactile : les boutons cliquables ont un padding suffisant */
-        .ctrl-btn, .acc-btn, .modal-close, .node-label {
-            touch-action: manipulation;
+            .node-label { font-size: 11px; padding: 4px 10px; white-space: normal; text-align: center; }
+            .ctrl-btn { padding: 8px 14px; font-size: 0.85rem; }
+            .modal-close { width: 44px; height: 44px; font-size: 1.5rem; top: -12px; right: -12px; }
         }
     </style>
 </head>
@@ -355,27 +230,27 @@
 
 <div id="info">
     <i class="fas fa-cube" style="color:#7ae4ff; margin-right:10px;"></i> 
-    <span>Constellation Mathématique • Yann Merdy<br>(M.À.J : 17/04/2026)</span>
+    <span>Constellation Mathématique • Yann Merdy<br><span style="color: rgba(20, 40, 60, 0.5);">MMMMMM</span>(M.À.J : 17/04/2026)</span>
 </div>
 <div id="level-indicator">
     <i class="fas fa-satellite"></i> Niveau : <span id="level-text">Catégories</span>
 </div>
 
 <div id="controls">
-    <button class="ctrl-btn" id="backBtn" onclick="goBack()"><i class="fas fa-arrow-left"></i> <span>Retour</span></button>
-    <button class="ctrl-btn" onclick="resetToCategories()"><i class="fas fa-globe"></i> <span>Toutes catégories</span></button>
+    <button class="ctrl-btn" id="backBtn" onclick="window.goBack()"><i class="fas fa-arrow-left"></i> <span>Retour</span></button>
+    <button class="ctrl-btn" onclick="window.resetToCategories()"><i class="fas fa-globe"></i> <span>Toutes catégories</span></button>
 </div>
 
 <div id="accessibility-panel">
-    <button class="acc-btn" onclick="toggleDysMode()" title="Police adaptée"><i class="fas fa-font"></i></button>
-    <button class="acc-btn" onclick="toggleVisionMode()" title="Contraste élevé"><i class="fas fa-eye"></i></button>
-    <button class="acc-btn" onclick="openModal('copyrightOverlay')" title="Droits d'auteur"><i class="fas fa-scale-balanced"></i></button>
+    <button class="acc-btn" onclick="window.toggleDysMode()" title="Police adaptée"><i class="fas fa-font"></i></button>
+    <button class="acc-btn" onclick="window.toggleVisionMode()" title="Contraste élevé"><i class="fas fa-eye"></i></button>
+    <button class="acc-btn" onclick="window.openModal('copyrightOverlay')" title="Droits d'auteur"><i class="fas fa-scale-balanced"></i></button>
 </div>
 
-<!-- Promo overlay (initial) -->
+<!-- Promo overlay SafeHelp -->
 <div id="promoOverlay" class="modal-overlay">
     <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('promoOverlay')"><i class="fas fa-times"></i></button>
+        <button class="modal-close" id="closePromoBtn"><i class="fas fa-times"></i></button>
         <a href="https://www.safehelp.website" target="_blank">
             <img src="image_880347.png" alt="SafeHelp" class="promo-image">
         </a>
@@ -386,7 +261,7 @@
 <!-- Copyright overlay -->
 <div id="copyrightOverlay" class="modal-overlay hidden">
     <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('copyrightOverlay')"><i class="fas fa-times"></i></button>
+        <button class="modal-close" id="closeCopyrightBtn"><i class="fas fa-times"></i></button>
         <h2 style="margin-top:0;">⚖️ Droits d'Auteur et Licence d'Utilisation</h2>
         <p><strong>Auteur :</strong> Yann Merdy (yann.merdy@gmail.com) - Avril 2026</p>
         <p><strong>Licence d'Utilisation Non Commerciale</strong></p>
@@ -406,7 +281,7 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-    // ---------- DONNÉES COMPLÈTES (fusion index (7) + PBL index (6) + duplication cartes Joker dans Flashcards) ----------
+    // ---------- DONNÉES COMPLÈTES (toutes les ressources) ----------
     const linksData = [
         // AUTOMATISMES
         { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_1.html", "title": "QCM Calcul (1)", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
@@ -571,19 +446,17 @@
     controls.enablePan = true;
     controls.maxPolarAngle = Math.PI / 1.8;
 
+    // Lumières
     const ambientLight = new THREE.AmbientLight(0x557799, 0.9);
     scene.add(ambientLight);
     const dirLight = new THREE.DirectionalLight(0xfff5e6, 1.2);
     dirLight.position.set(5, 12, 8);
     dirLight.castShadow = true;
     scene.add(dirLight);
-    const pointLight1 = new THREE.PointLight(0x88ccff, 1.2, 40);
-    pointLight1.position.set(3, 5, 5);
-    scene.add(pointLight1);
-    const pointLight2 = new THREE.PointLight(0xffaacc, 1.0, 40);
-    pointLight2.position.set(-4, 3, -6);
-    scene.add(pointLight2);
+    scene.add(new THREE.PointLight(0x88ccff, 1.2, 40).position.set(3,5,5));
+    scene.add(new THREE.PointLight(0xffaacc, 1.0, 40).position.set(-4,3,-6));
     
+    // Étoiles
     const starsGeo = new THREE.BufferGeometry();
     const starsCount = 2500;
     const starPos = new Float32Array(starsCount * 3);
@@ -593,8 +466,7 @@
         starPos[i+2] = (Math.random()-0.5)*200;
     }
     starsGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-    const starsMat = new THREE.PointsMaterial({color: 0xd4eaff, size: 0.18});
-    const stars = new THREE.Points(starsGeo, starsMat);
+    const stars = new THREE.Points(starsGeo, new THREE.PointsMaterial({color: 0xd4eaff, size: 0.18}));
     scene.add(stars);
 
     const nodesGroup = new THREE.Group();
@@ -606,13 +478,24 @@
     let currentCategory = null;
     let nodeObjects = [];
 
+    function handleNodeClick(data) {
+        if (!data) return;
+        if (data.type === 'category') {
+            showSubcategories(data.name);
+        } else if (data.type === 'subcategory') {
+            showDocuments(data.parent, data.name);
+        } else if (data.type === 'document') {
+            window.open(data.url, '_blank');
+        }
+    }
+
     function clearNodes() {
         while(nodesGroup.children.length) nodesGroup.remove(nodesGroup.children[0]);
         while(linesGroup.children.length) linesGroup.remove(linesGroup.children[0]);
         nodeObjects = [];
     }
 
-    function createNode(text, color, size = 0.5, labelClass = '') {
+    function createNode(text, color, size = 0.5, labelClass = '', nodeData) {
         const geo = new THREE.SphereGeometry(size, 32, 16);
         const mat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.4, roughness: 0.2 });
         const sphere = new THREE.Mesh(geo, mat);
@@ -623,6 +506,11 @@
         div.textContent = text;
         div.className = `node-label ${labelClass}`;
         div.style.pointerEvents = 'auto';
+        div.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleNodeClick(nodeData);
+        });
+        
         const label = new CSS2DObject(div);
         label.position.set(0, size + 0.7, 0);
         return { sphere, label };
@@ -632,8 +520,7 @@
         positions.forEach(p => {
             const points = [center.clone(), p.clone()];
             const geo = new THREE.BufferGeometry().setFromPoints(points);
-            const mat = new THREE.LineBasicMaterial({ color });
-            linesGroup.add(new THREE.Line(geo, mat));
+            linesGroup.add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color })));
         });
     }
 
@@ -654,18 +541,18 @@
             positions.push(pos);
             const hue = (i/count)*0.8+0.5;
             const color = new THREE.Color().setHSL(hue, 0.9, 0.55);
-            const {sphere, label} = createNode(cat, color, 0.75);
+            const nodeData = { type: 'category', name: cat };
+            const {sphere, label} = createNode(cat, color, 0.75, '', nodeData);
             sphere.position.copy(pos);
             label.position.copy(pos.clone().add(new THREE.Vector3(0,1.1,0)));
             nodesGroup.add(sphere); nodesGroup.add(label);
-            nodeObjects.push({mesh: sphere, label, data: {type:'category', name:cat}});
+            nodeObjects.push({mesh: sphere, label, data: nodeData});
         });
         for(let i=0; i<positions.length; i++) {
             for(let j=i+1; j<positions.length; j++) {
                 if(Math.random()>0.65) continue;
                 const pts = [positions[i], positions[j]];
-                const geo = new THREE.BufferGeometry().setFromPoints(pts);
-                linesGroup.add(new THREE.Line(geo, new THREE.LineBasicMaterial({color:0x88aadd, transparent:true, opacity:0.2})));
+                linesGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:0x88aadd, transparent:true, opacity:0.2})));
             }
         }
     }
@@ -687,11 +574,12 @@
             const y = Math.sin(angle*2.2)*1.5;
             const pos = new THREE.Vector3(x,y,z);
             positions.push(pos);
-            const {sphere, label} = createNode(sub, 0xff88aa, 0.6, 'subcat-label');
+            const nodeData = { type: 'subcategory', name: sub, parent: catName };
+            const {sphere, label} = createNode(sub, 0xff88aa, 0.6, 'subcat-label', nodeData);
             sphere.position.copy(pos);
             label.position.copy(pos.clone().add(new THREE.Vector3(0,1.0,0)));
             nodesGroup.add(sphere); nodesGroup.add(label);
-            nodeObjects.push({mesh: sphere, label, data: {type:'subcategory', name:sub, parent:catName}});
+            nodeObjects.push({mesh: sphere, label, data: nodeData});
         });
         addLines(center, positions, 0xffaacc);
     }
@@ -712,18 +600,22 @@
             const pos = new THREE.Vector3(x,y,z);
             positions.push(pos);
             const shortTitle = link.title.length>22 ? link.title.slice(0,20)+'…' : link.title;
-            const {sphere, label} = createNode(shortTitle, 0x7fdb9a, 0.45, 'doc-label');
+            const nodeData = { type: 'document', url: link.url };
+            const {sphere, label} = createNode(shortTitle, 0x7fdb9a, 0.45, 'doc-label', nodeData);
             sphere.position.copy(pos);
             label.position.copy(pos.clone().add(new THREE.Vector3(0,0.9,0)));
             nodesGroup.add(sphere); nodesGroup.add(label);
-            nodeObjects.push({mesh: sphere, label, data: {type:'document', url:link.url}});
+            nodeObjects.push({mesh: sphere, label, data: nodeData});
         });
         addLines(center, positions, 0x8febb0);
     }
 
+    // Raycaster pour clic sur sphères (desktop / précision)
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     renderer.domElement.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target && target.closest && target.closest('.node-label')) return;
         mouse.x = (e.clientX / renderer.domElement.clientWidth)*2-1;
         mouse.y = -(e.clientY / renderer.domElement.clientHeight)*2+1;
         raycaster.setFromCamera(mouse, camera);
@@ -732,20 +624,34 @@
         if(intersects.length) {
             const hit = intersects[0].object;
             const node = nodeObjects.find(n => n.mesh === hit);
-            if(node) {
-                const d = node.data;
-                if(d.type === 'category') showSubcategories(d.name);
-                else if(d.type === 'subcategory') showDocuments(d.parent, d.name);
-                else if(d.type === 'document') window.open(d.url, '_blank');
-            }
+            if(node) handleNodeClick(node.data);
         }
     });
 
-    function goBack() {
+    // Fonctions globales
+    window.goBack = function() {
         if(currentLevel === 'subcategories') showCategories();
         else if(currentLevel === 'documents') showSubcategories(currentCategory);
-    }
-    function resetToCategories() { showCategories(); }
+    };
+    window.resetToCategories = () => showCategories();
+    window.toggleDysMode = () => document.body.classList.toggle('dys-mode');
+    window.toggleVisionMode = () => document.body.classList.toggle('vision-mode');
+    window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+    window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+
+    // Écouteurs tactiles pour les croix de fermeture
+    document.addEventListener('DOMContentLoaded', () => {
+        const closePromo = document.getElementById('closePromoBtn');
+        if (closePromo) {
+            closePromo.addEventListener('click', (e) => { e.stopPropagation(); window.closeModal('promoOverlay'); });
+            closePromo.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); window.closeModal('promoOverlay'); }, { passive: false });
+        }
+        const closeCopyright = document.getElementById('closeCopyrightBtn');
+        if (closeCopyright) {
+            closeCopyright.addEventListener('click', (e) => { e.stopPropagation(); window.closeModal('copyrightOverlay'); });
+            closeCopyright.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); window.closeModal('copyrightOverlay'); }, { passive: false });
+        }
+    });
 
     function animate() {
         requestAnimationFrame(animate);
@@ -767,13 +673,6 @@
 
     showCategories();
     animate();
-
-    window.goBack = goBack;
-    window.resetToCategories = resetToCategories;
-    window.toggleDysMode = () => document.body.classList.toggle('dys-mode');
-    window.toggleVisionMode = () => document.body.classList.toggle('vision-mode');
-    window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
-    window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
     
     setTimeout(() => document.getElementById('promoOverlay').classList.remove('hidden'), 1200);
 </script>
