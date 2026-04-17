@@ -2,8 +2,8 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Constellation Mathématique • Holographique + PBL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, shrink-to-fit=no">
+    <title>Constellation Mathématique • Yann Merdy (M. À. J. : 17/04/2026)</title>
     <script type="importmap">
         {
             "imports": {
@@ -14,6 +14,7 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* === BASE STYLES (déjà responsive-friendly) === */
         body {
             margin: 0;
             overflow: hidden;
@@ -21,7 +22,10 @@
             background: #0b1a2a;
             color: white;
         }
-        canvas { display: block; }
+        canvas { 
+            display: block; 
+            touch-action: none;  /* évite le scroll pendant l'interaction 3D sur mobile */
+        }
         #info {
             position: absolute;
             top: 20px; left: 20px;
@@ -34,6 +38,7 @@
             box-shadow: 0 0 30px rgba(100, 220, 255, 0.4);
             pointer-events: none;
             color: #e6f7ff;
+            transition: all 0.2s;
         }
         #level-indicator {
             position: absolute;
@@ -47,6 +52,7 @@
             color: #f0e6ff;
             font-weight: 600;
             pointer-events: none;
+            transition: all 0.2s;
         }
         #controls {
             position: absolute;
@@ -54,6 +60,8 @@
             z-index: 200;
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
+            pointer-events: none;
         }
         .ctrl-btn {
             background: rgba(15, 45, 70, 0.7);
@@ -71,6 +79,7 @@
             align-items: center;
             gap: 10px;
             pointer-events: auto;
+            white-space: nowrap;
         }
         .ctrl-btn:hover {
             background: #5ec8ff;
@@ -91,6 +100,8 @@
             z-index: 200;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            pointer-events: none;
         }
         .acc-btn {
             background: rgba(0, 20, 40, 0.6);
@@ -105,6 +116,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: auto;
         }
         .acc-btn:hover {
             border-color: #7ae4ff;
@@ -130,6 +142,7 @@
             width: 90%;
             color: #e0f2fe;
             box-shadow: 0 0 60px #7ae4ff33;
+            position: relative;
         }
         .modal-close {
             position: absolute;
@@ -142,6 +155,9 @@
             font-size: 1.3rem;
             cursor: pointer;
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .modal-close:hover {
             background: #ff7b9c;
@@ -190,21 +206,164 @@
             filter: contrast(1.6) brightness(1.2);
         }
         body.vision-mode .ctrl-btn { background: black; border-color: yellow; color: yellow; }
+
+        /* === RESPONSIVE ENHANCEMENTS === */
+        @media screen and (max-width: 768px) {
+            #info {
+                top: 12px;
+                left: 12px;
+                padding: 8px 16px;
+                font-size: 14px;
+                border-radius: 30px;
+            }
+            #level-indicator {
+                top: 12px;
+                right: 12px;
+                padding: 6px 14px;
+                font-size: 13px;
+            }
+            .ctrl-btn {
+                padding: 10px 18px;
+                font-size: 0.95rem;
+                gap: 8px;
+            }
+            #controls {
+                bottom: 20px;
+                left: 12px;
+                gap: 10px;
+            }
+            #accessibility-panel {
+                bottom: 20px;
+                right: 12px;
+                gap: 8px;
+            }
+            .acc-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1.3rem;
+            }
+            .node-label {
+                font-size: 12px;
+                padding: 5px 12px;
+                white-space: nowrap;
+            }
+            .doc-label {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .modal-box {
+                padding: 24px 20px;
+                max-width: 90%;
+                border-radius: 24px;
+            }
+            .modal-close {
+                top: -10px;
+                right: -10px;
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+            .promo-btn {
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            #info {
+                padding: 6px 12px;
+                font-size: 13px;
+                backdrop-filter: blur(8px);
+            }
+            /* Sur très petit écran, on peut masquer le texte long et ne garder que l'icône */
+            #info span {
+                display: inline; /* garder lisible mais on peut réduire */
+            }
+            #level-indicator {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+            .ctrl-btn {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+                border-radius: 30px;
+                gap: 6px;
+            }
+            #controls {
+                gap: 8px;
+                flex-wrap: wrap;
+                max-width: calc(100% - 24px);
+            }
+            .acc-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 1.2rem;
+                border-radius: 25px;
+            }
+            #accessibility-panel {
+                gap: 6px;
+            }
+            .node-label {
+                font-size: 11px;
+                padding: 4px 10px;
+                max-width: 140px;
+                white-space: normal;  /* autoriser le retour à la ligne si nécessaire */
+                text-align: center;
+                line-height: 1.3;
+            }
+            .modal-box {
+                padding: 20px 16px;
+            }
+            .modal-box h2 {
+                font-size: 1.4rem;
+            }
+            .promo-btn {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        /* Optimisation pour les très petits écrans (ex: iPhone SE) */
+        @media screen and (max-width: 380px) {
+            #info span {
+                display: none;  /* ne garder que l'icône */
+            }
+            #info i {
+                margin-right: 0 !important;
+            }
+            #level-indicator i {
+                margin-right: 4px;
+            }
+            .ctrl-btn i {
+                margin-right: 0;
+            }
+            .ctrl-btn {
+                padding: 6px 12px;
+            }
+            #backBtn span, .ctrl-btn span {
+                /* on garde le texte pour l'accessibilité, mais on peut le raccourcir visuellement */
+            }
+        }
+
+        /* Amélioration du confort tactile : les boutons cliquables ont un padding suffisant */
+        .ctrl-btn, .acc-btn, .modal-close, .node-label {
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body>
 
 <div id="info">
     <i class="fas fa-cube" style="color:#7ae4ff; margin-right:10px;"></i> 
-    <span>Constellation · Mathématiques + PBL Red Bull</span>
+    <span>Constellation · Maths + PBL</span>
 </div>
 <div id="level-indicator">
     <i class="fas fa-satellite"></i> Niveau : <span id="level-text">Catégories</span>
 </div>
 
 <div id="controls">
-    <button class="ctrl-btn" id="backBtn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Retour</button>
-    <button class="ctrl-btn" onclick="resetToCategories()"><i class="fas fa-globe"></i> Toutes catégories</button>
+    <button class="ctrl-btn" id="backBtn" onclick="goBack()"><i class="fas fa-arrow-left"></i> <span>Retour</span></button>
+    <button class="ctrl-btn" onclick="resetToCategories()"><i class="fas fa-globe"></i> <span>Toutes catégories</span></button>
 </div>
 
 <div id="accessibility-panel">
@@ -213,6 +372,7 @@
     <button class="acc-btn" onclick="openModal('copyrightOverlay')" title="Droits d'auteur"><i class="fas fa-scale-balanced"></i></button>
 </div>
 
+<!-- Promo overlay (initial) -->
 <div id="promoOverlay" class="modal-overlay">
     <div class="modal-box">
         <button class="modal-close" onclick="closeModal('promoOverlay')"><i class="fas fa-times"></i></button>
@@ -222,21 +382,22 @@
         <a href="https://www.safehelp.website" target="_blank" class="promo-btn">Découvrir SafeHelp</a>
     </div>
 </div>
+
+<!-- Copyright overlay -->
 <div id="copyrightOverlay" class="modal-overlay hidden">
     <div class="modal-box">
         <button class="modal-close" onclick="closeModal('copyrightOverlay')"><i class="fas fa-times"></i></button>
-        <h2>⚖️ Droits d'Auteur et Licence d'Utilisation</h2>
-            <p><strong>Auteur :</strong> Yann Merdy (yann.merdy@gmail.com) - Avril 2026</p>
-            <p><strong>Licence d'Utilisation Non Commerciale</strong></p>
-            <p>Ce code HTML/CSS/JavaScript ainsi que le contenu généré par l'application ('Portail Éducatif Mathématiques') sont la propriété intellectuelle exclusive de l'auteur, Yann Merdy.</p>
-            <p><strong>Conditions :</strong></p>
-            <ul>
-                <li><strong>Utilisation Privée et Éducative (Autorisée) :</strong> Vous êtes autorisé.e à utiliser, copier, modifier et distribuer ce code et son contenu uniquement à des fins personnelles, éducatives et non lucratives.</li>
-                <li><strong>Utilisation Commerciale (Interdite) :</strong> Toute utilisation, distribution, intégration ou reproduction du code ou du contenu (total ou partiel) à des fins commerciales, lucratives ou professionnelles est strictement interdite sans un accord écrit préalable et explicite de l'auteur.</li>
-                <li><strong>Attribution :</strong> Toute reproduction ou modification doit conserver la mention de l'auteur originale (Yann Merdy) et la présente notice de droits d'auteur.</li>
-            </ul>
-            <p><em>Pour toute demande d'utilisation commerciale ou de licence spécifique, veuillez contacter l'auteur à l'adresse indiquée ci-dessus.</em></p>
-
+        <h2 style="margin-top:0;">⚖️ Droits d'Auteur et Licence d'Utilisation</h2>
+        <p><strong>Auteur :</strong> Yann Merdy (yann.merdy@gmail.com) - Avril 2026</p>
+        <p><strong>Licence d'Utilisation Non Commerciale</strong></p>
+        <p>Ce code HTML/CSS/JavaScript ainsi que le contenu généré par l'application ('Portail Éducatif Mathématiques') sont la propriété intellectuelle exclusive de l'auteur, Yann Merdy.</p>
+        <p><strong>Conditions :</strong></p>
+        <ul>
+            <li><strong>Utilisation Privée et Éducative (Autorisée) :</strong> Vous êtes autorisé.e à utiliser, copier, modifier et distribuer ce code et son contenu uniquement à des fins personnelles, éducatives et non lucratives.</li>
+            <li><strong>Utilisation Commerciale (Interdite) :</strong> Toute utilisation, distribution, intégration ou reproduction du code ou du contenu (total ou partiel) à des fins commerciales, lucratives ou professionnelles est strictement interdite sans un accord écrit préalable et explicite de l'auteur.</li>
+            <li><strong>Attribution :</strong> Toute reproduction ou modification doit conserver la mention de l'auteur originale (Yann Merdy) et la présente notice de droits d'auteur.</li>
+        </ul>
+        <p><em>Pour toute demande d'utilisation commerciale ou de licence spécifique, veuillez contacter l'auteur à l'adresse indiquée ci-dessus.</em></p>
     </div>
 </div>
 
@@ -245,144 +406,141 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-    // ---------- DONNÉES COMPLÈTES (fusion index (7) + PBL index (6)) ----------
     // ---------- DONNÉES COMPLÈTES (fusion index (7) + PBL index (6) + duplication cartes Joker dans Flashcards) ----------
-const linksData = [
-    // AUTOMATISMES
-    { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_1.html", "title": "QCM Calcul (1)", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
-    { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_2.html", "title": "QCM Calcul (2)", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
-    { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_3.html", "title": "QCM Calcul (3)", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
-    { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_EVOLUTIONS_ET_VARIARIONS.html", "title": "QCM Évolutions", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
-    { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_PROPORTIONS_ET_POURCENTAGES.html", "title": "QCM Proportions", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
-    // ALGEBRE
-    { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", "title": "Calculs (Algèbre)", "category": "Algèbre", "subcategory": "Calcul Littéral", "classes": "1ère STL/STI2D" },
-    { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html", "title": "Évolutions", "category": "Algèbre", "subcategory": "Outils", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/IDENTITES_REMARQUABLES.html", "title": "Identités remarquables", "category": "Algèbre", "subcategory": "Calcul Littéral", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", "title": "Tableaux de signes", "category": "Algèbre", "subcategory": "Outils", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/FACTORISATIONS/", "title": "Factorisations", "category": "Algèbre", "subcategory": "Calcul Littéral", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", "title": "QCM Formes quadratiques", "category": "Algèbre", "subcategory": "Second Degré", "classes": "1ère" },
-    // ANALYSE
-    { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", "title": "Second degré (Étude)", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/SECOND_DEGRE_EXERCICE_APPLICATION.html", "title": "Second degré (Application)", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/DROITES", "title": "Droites", "category": "Analyse", "subcategory": "Droites", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/MONOTONIE/FONCTIONS_MONOTONES.html", "title": "Fonctions monotones", "category": "Analyse", "subcategory": "Fonctions Monotones", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", "title": "Nombre dérivé", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", "title": "Calculs de nombre dérivé", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVEE_POLYNOMES.html", "title": "Dérivation polynômes", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVEES_PCM.html", "title": "Opérations sur dérivées", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/fonction_carree.html", "title": "Fonction carrée", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE.html", "title": "Fonction second degré", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE_EXERCICES_GUIDES.html", "title": "Second degré (exos)", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/DEFINITIONS_SUITES_NUMERIQUES.html", "title": "Suites - Applications", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/VARIATION_SUITES_NUMERIQUES.html", "title": "Suites (Variations)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_NUMERIQUES_LECONS.html", "title": "Suites (cours)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITE_ARITHMETIQUE_V2.html", "title": "Suites arithmétiques", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITE_GEOMETRIQUE_V2.html", "title": "Suites géométriques", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHMETIQUES_EXERCICES.html", "title": "Suites arithmétiques (exos)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHMETIQUES_EXERCICES_CONCEPTUALISES_VALEURS_DYNAMIQUE.html", "title": "Suites arithmétiques (dyn)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_GEOMETRIQUES_EXERCICES_CONCEPTUALISES_VALEURS_DYNAMIQUE.html", "title": "Suites géométriques (dyn)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHM_GEOM_COURS.html", "title": "Suites arith/géom (cours)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHM_GEOM_METHODES.html", "title": "Suites arith/géom (méthodes)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVATION_FONCTIONS_OPERATIONS.html", "title": "Dérivation (tableaux)", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "Tous" },
-    { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVATION_FONCTIONS_ETUDES.html", "title": "Dérivation (exos)", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1STL" },
-    { "url": "https://ldv78100ym-hub.github.io/PRIMITIVES/index.html", "title": "Primitives", "category": "Analyse", "subcategory": "Primitives", "classes": "1ère" },
-    // GEOMETRIE
-    { "url": "https://ldv78100ym-hub.github.io/TRIGONOMETRIE-/TRIGONOMETRIE_SYNTHESE.html", "title": "Trigonométrie", "category": "Géométrie", "subcategory": "Trigonométrie", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", "title": "Produit scalaire", "category": "Géométrie", "subcategory": "Vecteurs", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/FORME_ALGEBRIQUE.html", "title": "Complexes (cours)", "category": "Géométrie", "subcategory": "Nombres Complexes", "classes": "1ère STI2D" },
-    { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES.html", "title": "Complexes (exos)", "category": "Géométrie", "subcategory": "Nombres Complexes", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES_CHRONO.html", "title": "Complexes - Chrono", "category": "Géométrie", "subcategory": "Nombres Complexes", "classes": "1ère" },
-    // PROBABILITES
-    { "url": "https://ldv78100ym-hub.github.io/PROBABILITES/", "title": "Probabilités", "category": "Probabilités", "subcategory": "Général", "classes": "1ère" },
-    // VARIABLES ALEATOIRES
-    { "url": "https://ldv78100ym-hub.github.io/VARIABLES-ALEATOIRES/PBL01.pdf", "title": "Variables aléatoires (PBL1)", "category": "Variables Aléatoires", "subcategory": "Problèmes", "classes": "1ère/Term" },
-    { "url": "https://ldv78100ym-hub.github.io/VARIABLES-ALEATOIRES/PBL02.pdf", "title": "Variables aléatoires (PBL2)", "category": "Variables Aléatoires", "subcategory": "Problèmes", "classes": "1ère/Term" },
-    { "url": "https://ldv78100ym-hub.github.io/VARIABLES-ALEATOIRES/PBL03.pdf", "title": "Variables aléatoires (PBL3)", "category": "Variables Aléatoires", "subcategory": "Problèmes", "classes": "1ère/Term" },
-    // MATHS EXPERTES
-    { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_1.html", "title": "Divisibilité", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_2.html", "title": "Division euclidienne", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/CRITERES_DIVISIBILITE.html", "title": "Critères divisibilité", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_3.html", "title": "PGCD", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_4.html", "title": "Euclide / Bézout", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_5.html", "title": "Équation diophantienne", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_6.html", "title": "Nombres premiers", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/EUCLIDE_ETENDU.html", "title": "Euclide étendu", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_COURS.html", "title": "Graphes - Cours", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHE_INTERACTIF.html", "title": "Analyseur de graphes", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE.html", "title": "Graphes - Arithmétique", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE_V2.html", "title": "Générateur de Collatz", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_C.html", "title": "Graphes - Plan complexe", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/MATRICE_CHAINE_DE_MARKOV.html", "title": "Chaînes de Markov", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/LE_PATROUILLEUR_DE_L_ENTREPOT.html", "title": "Cycle eulérien", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/GRAPHES/INTERPOLATION_DE_VANDERMONDE.html", "title": "Interpolation Vandermonde", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/FORME_ALGEBRIQUE.html", "title": "Complexes (cours)", "category": "Maths Expertes", "subcategory": "Nombres Complexes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES.html", "title": "Complexes (exos)", "category": "Maths Expertes", "subcategory": "Nombres Complexes", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/PBL/PBL_01.html", "title": "PBL 01", "category": "Maths Expertes", "subcategory": "PBL", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/PBL/PBL_02.html", "title": "PBL 02", "category": "Maths Expertes", "subcategory": "PBL", "classes": "Term" },
-    { "url": "https://ldv78100ym-hub.github.io/PBL/PBL_03.html", "title": "PBL 03", "category": "Maths Expertes", "subcategory": "PBL", "classes": "Term" },
-    // CPGE
-    { "url": "https://ldv78100ym-hub.github.io/CPGE/RAISONNEMENT_PAR_L_ABSURDE.html", "title": "Raisonnement par l'absurde", "category": "CPGE", "subcategory": "Logique", "classes": "CPGE" },
-    // FLASHCARDS (originaux)
-    { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/FACTORISATIONS_FLASHCARDS.html", "title": "Flashcards Factorisations", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/DEVELOPPEMENTS_FLASHCARDS.html", "title": "Flashcards Développements", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/DROITES_FLASHCARDS.html", "title": "Flashcards Droites", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/PRODUIT_SCALAIRE_FLASHCARDS.html", "title": "Flashcards Produit scalaire", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/TRIGOMASTER.html", "title": "TrigoMaster", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
-    // JEUX
-    { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", "title": "Jeux mathématiques", "category": "Jeux", "subcategory": "Ludique", "classes": "Tous" },
-    { "url": "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", "title": "Quête produit scalaire", "category": "Jeux", "subcategory": "Ludique", "classes": "1ère" },
-    // PREPA BAC
-    { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/BAC_BLANC_TECHNO_01.html", "title": "Sujet Bac Blanc", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/QCM.html", "title": "QCM type Bac", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_1.html", "title": "Bac : fonction dérivée", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_2.html", "title": "Bac : suite et Python", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_3.html", "title": "Bac : probabilités", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
-    // COEFFICIENTS
-    { "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STI2D.html", "title": "Coefficients Bac STI2D", "category": "Coefficients", "subcategory": "Examens", "classes": "1ère" },
-    { "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STL.html", "title": "Coefficients Bac STL", "category": "Coefficients", "subcategory": "Examens", "classes": "1ère" },
-    // ENSEIGNEMENTS SCIENTIFIQUES
-    { "url": "https://ldv78100ym-hub.github.io/ENSEIGNEMENT-SCIENTIFIQUE-/PROJETS/index.html", "title": "Projets fin d'année", "category": "Enseignements Scientifiques", "subcategory": "Présentation", "classes": "1G" },
-    
-    // ---------- PBL RED BULL (index 6) ----------
-    { "url": "RED_BULL_SKY_AND_DIRT_CHALLENGE_V2.pdf", "title": "📄 L'ÉNONCÉ (PDF)", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
-    { "url": "DOSSIER_SYNTHESE_MAQUETTE.pdf", "title": "Dossier synthèse maquette", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
-    { "url": "CRITERES_EVALUATION_PROFS.pdf", "title": "Critères évaluation profs", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
-    { "url": "COMMUNICATION_PREPARATOIRE_VERS_ELEVES_ET_ENSEIGNANTS.pdf", "title": "Communication préparatoire", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
-    { "url": "DOSSIER_SYNTHESE_SOUS_GROUPE_MAQUETTE.pdf", "title": "Dossier synthèse sous-groupe", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
-    { "url": "TRIGONOMETRIE_TABLEAU_BILAN.pdf", "title": "Trigonométrie tableau bilan", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
-    { "url": "PYTHON_V2.pdf", "title": "Python V2", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
-    { "url": "LIAISONS_PARTIES.pdf", "title": "Liaisons parties", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
-    { "url": "LIAISONS_DOCUMENTS.pdf", "title": "Liaisons documents", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
-    { "url": "FICHE_SYNTHESE.pdf", "title": "Fiche synthèse", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
-    { "url": "DOSSIER_SYNTHESE_PYTHON.pdf", "title": "Dossier synthèse Python", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
-    // Cartes Joker (dans PBL Challenge)
-    { "url": "CARTES_JOKER_DERIVATION.pdf", "title": "Cartes Joker Dérivation", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-    { "url": "CARTES_JOKER_DERIVEES_PCM.pdf", "title": "Cartes Joker Dérivées PCM", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-    { "url": "CARTES_JOKER_FONCTIONS.pdf", "title": "Cartes Joker Fonctions", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-    { "url": "CARTES_JOKER_PRODUIT_SCALAIRE.pdf", "title": "Cartes Joker Produit Scalaire", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-    { "url": "CARTES_JOKER_SECOND_DEGRE.pdf", "title": "Cartes Joker Second Degré", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-    { "url": "CARTES_JOKER_STATISTIQUES_PROBABILITES.pdf", "title": "Cartes Joker Stats/Probas", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-    { "url": "CARTES_JOKER_SUITES.pdf", "title": "Cartes Joker Suites", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-    { "url": "CARTES_JOKER_TRIGONOMETRIE.pdf", "title": "Cartes Joker Trigonométrie", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
-
-    // ---------- DUPLICATION DES CARTES JOKER DANS LA CATÉGORIE FLASHCARDS ----------
-    { "url": "CARTES_JOKER_DERIVATION.pdf", "title": "🃏 Dérivation (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-    { "url": "CARTES_JOKER_DERIVEES_PCM.pdf", "title": "🃏 Dérivées PCM (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-    { "url": "CARTES_JOKER_FONCTIONS.pdf", "title": "🃏 Fonctions (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-    { "url": "CARTES_JOKER_PRODUIT_SCALAIRE.pdf", "title": "🃏 Produit Scalaire (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-    { "url": "CARTES_JOKER_SECOND_DEGRE.pdf", "title": "🃏 Second Degré (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-    { "url": "CARTES_JOKER_STATISTIQUES_PROBABILITES.pdf", "title": "🃏 Stats/Probas (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-    { "url": "CARTES_JOKER_SUITES.pdf", "title": "🃏 Suites (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-    { "url": "CARTES_JOKER_TRIGONOMETRIE.pdf", "title": "🃏 Trigonométrie (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
-];
+    const linksData = [
+        // AUTOMATISMES
+        { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_1.html", "title": "QCM Calcul (1)", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
+        { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_2.html", "title": "QCM Calcul (2)", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
+        { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_3.html", "title": "QCM Calcul (3)", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
+        { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_EVOLUTIONS_ET_VARIARIONS.html", "title": "QCM Évolutions", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
+        { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_PROPORTIONS_ET_POURCENTAGES.html", "title": "QCM Proportions", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
+        // ALGEBRE
+        { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", "title": "Calculs (Algèbre)", "category": "Algèbre", "subcategory": "Calcul Littéral", "classes": "1ère STL/STI2D" },
+        { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html", "title": "Évolutions", "category": "Algèbre", "subcategory": "Outils", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/IDENTITES_REMARQUABLES.html", "title": "Identités remarquables", "category": "Algèbre", "subcategory": "Calcul Littéral", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/TABLEAUX-DE-SIGNES/", "title": "Tableaux de signes", "category": "Algèbre", "subcategory": "Outils", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/FACTORISATIONS/", "title": "Factorisations", "category": "Algèbre", "subcategory": "Calcul Littéral", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index2.html", "title": "QCM Formes quadratiques", "category": "Algèbre", "subcategory": "Second Degré", "classes": "1ère" },
+        // ANALYSE
+        { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index1.html", "title": "Second degré (Étude)", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/SECOND_DEGRE_EXERCICE_APPLICATION.html", "title": "Second degré (Application)", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/DROITES", "title": "Droites", "category": "Analyse", "subcategory": "Droites", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/MONOTONIE/FONCTIONS_MONOTONES.html", "title": "Fonctions monotones", "category": "Analyse", "subcategory": "Fonctions Monotones", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/", "title": "Nombre dérivé", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/NOMBRE_DERIVE/CALCULS.html", "title": "Calculs de nombre dérivé", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVEE_POLYNOMES.html", "title": "Dérivation polynômes", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVEES_PCM.html", "title": "Opérations sur dérivées", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/fonction_carree.html", "title": "Fonction carrée", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE.html", "title": "Fonction second degré", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/QUADRATIQUE_EXERCICES_GUIDES.html", "title": "Second degré (exos)", "category": "Analyse", "subcategory": "Second Degré", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/DEFINITIONS_SUITES_NUMERIQUES.html", "title": "Suites - Applications", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/VARIATION_SUITES_NUMERIQUES.html", "title": "Suites (Variations)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_NUMERIQUES_LECONS.html", "title": "Suites (cours)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITE_ARITHMETIQUE_V2.html", "title": "Suites arithmétiques", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITE_GEOMETRIQUE_V2.html", "title": "Suites géométriques", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHMETIQUES_EXERCICES.html", "title": "Suites arithmétiques (exos)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHMETIQUES_EXERCICES_CONCEPTUALISES_VALEURS_DYNAMIQUE.html", "title": "Suites arithmétiques (dyn)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_GEOMETRIQUES_EXERCICES_CONCEPTUALISES_VALEURS_DYNAMIQUE.html", "title": "Suites géométriques (dyn)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHM_GEOM_COURS.html", "title": "Suites arith/géom (cours)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/SUITES_NUMERIQUES/SUITES_ARITHM_GEOM_METHODES.html", "title": "Suites arith/géom (méthodes)", "category": "Analyse", "subcategory": "Suites Numériques", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVATION_FONCTIONS_OPERATIONS.html", "title": "Dérivation (tableaux)", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "Tous" },
+        { "url": "https://ldv78100ym-hub.github.io/DERIVATION/DERIVATION_FONCTIONS_ETUDES.html", "title": "Dérivation (exos)", "category": "Analyse", "subcategory": "Nombre Dérivé", "classes": "1STL" },
+        { "url": "https://ldv78100ym-hub.github.io/PRIMITIVES/index.html", "title": "Primitives", "category": "Analyse", "subcategory": "Primitives", "classes": "1ère" },
+        // GEOMETRIE
+        { "url": "https://ldv78100ym-hub.github.io/TRIGONOMETRIE-/TRIGONOMETRIE_SYNTHESE.html", "title": "Trigonométrie", "category": "Géométrie", "subcategory": "Trigonométrie", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/PRODUIT_SCALAIRE/", "title": "Produit scalaire", "category": "Géométrie", "subcategory": "Vecteurs", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/FORME_ALGEBRIQUE.html", "title": "Complexes (cours)", "category": "Géométrie", "subcategory": "Nombres Complexes", "classes": "1ère STI2D" },
+        { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES.html", "title": "Complexes (exos)", "category": "Géométrie", "subcategory": "Nombres Complexes", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES_CHRONO.html", "title": "Complexes - Chrono", "category": "Géométrie", "subcategory": "Nombres Complexes", "classes": "1ère" },
+        // PROBABILITES
+        { "url": "https://ldv78100ym-hub.github.io/PROBABILITES/", "title": "Probabilités", "category": "Probabilités", "subcategory": "Général", "classes": "1ère" },
+        // VARIABLES ALEATOIRES
+        { "url": "https://ldv78100ym-hub.github.io/VARIABLES-ALEATOIRES/PBL01.pdf", "title": "Variables aléatoires (PBL1)", "category": "Variables Aléatoires", "subcategory": "Problèmes", "classes": "1ère/Term" },
+        { "url": "https://ldv78100ym-hub.github.io/VARIABLES-ALEATOIRES/PBL02.pdf", "title": "Variables aléatoires (PBL2)", "category": "Variables Aléatoires", "subcategory": "Problèmes", "classes": "1ère/Term" },
+        { "url": "https://ldv78100ym-hub.github.io/VARIABLES-ALEATOIRES/PBL03.pdf", "title": "Variables aléatoires (PBL3)", "category": "Variables Aléatoires", "subcategory": "Problèmes", "classes": "1ère/Term" },
+        // MATHS EXPERTES
+        { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_1.html", "title": "Divisibilité", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_2.html", "title": "Division euclidienne", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/CRITERES_DIVISIBILITE.html", "title": "Critères divisibilité", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_3.html", "title": "PGCD", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_4.html", "title": "Euclide / Bézout", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_5.html", "title": "Équation diophantienne", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/SEANCE_6.html", "title": "Nombres premiers", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/ARITHMETIQUE/EUCLIDE_ETENDU.html", "title": "Euclide étendu", "category": "Maths Expertes", "subcategory": "Arithmétique", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_COURS.html", "title": "Graphes - Cours", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHE_INTERACTIF.html", "title": "Analyseur de graphes", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE.html", "title": "Graphes - Arithmétique", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_ARITHMETIQUE_V2.html", "title": "Générateur de Collatz", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/GRAPHES_C.html", "title": "Graphes - Plan complexe", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/MATRICE_CHAINE_DE_MARKOV.html", "title": "Chaînes de Markov", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/LE_PATROUILLEUR_DE_L_ENTREPOT.html", "title": "Cycle eulérien", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/GRAPHES/INTERPOLATION_DE_VANDERMONDE.html", "title": "Interpolation Vandermonde", "category": "Maths Expertes", "subcategory": "Matrices & Graphes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/FORME_ALGEBRIQUE.html", "title": "Complexes (cours)", "category": "Maths Expertes", "subcategory": "Nombres Complexes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRES_COMPLEXES_FORME_ALGEBRIQUE_EXERCICES.html", "title": "Complexes (exos)", "category": "Maths Expertes", "subcategory": "Nombres Complexes", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/PBL/PBL_01.html", "title": "PBL 01", "category": "Maths Expertes", "subcategory": "PBL", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/PBL/PBL_02.html", "title": "PBL 02", "category": "Maths Expertes", "subcategory": "PBL", "classes": "Term" },
+        { "url": "https://ldv78100ym-hub.github.io/PBL/PBL_03.html", "title": "PBL 03", "category": "Maths Expertes", "subcategory": "PBL", "classes": "Term" },
+        // CPGE
+        { "url": "https://ldv78100ym-hub.github.io/CPGE/RAISONNEMENT_PAR_L_ABSURDE.html", "title": "Raisonnement par l'absurde", "category": "CPGE", "subcategory": "Logique", "classes": "CPGE" },
+        // FLASHCARDS
+        { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/FACTORISATIONS_FLASHCARDS.html", "title": "Flashcards Factorisations", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/DEVELOPPEMENTS_FLASHCARDS.html", "title": "Flashcards Développements", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/DROITES_FLASHCARDS.html", "title": "Flashcards Droites", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/PRODUIT_SCALAIRE_FLASHCARDS.html", "title": "Flashcards Produit scalaire", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/FLASHCARDS/TRIGOMASTER.html", "title": "TrigoMaster", "category": "Flashcards", "subcategory": "Révisions", "classes": "1ère" },
+        // JEUX
+        { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", "title": "Jeux mathématiques", "category": "Jeux", "subcategory": "Ludique", "classes": "Tous" },
+        { "url": "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", "title": "Quête produit scalaire", "category": "Jeux", "subcategory": "Ludique", "classes": "1ère" },
+        // PREPA BAC
+        { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/BAC_BLANC_TECHNO_01.html", "title": "Sujet Bac Blanc", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/QCM.html", "title": "QCM type Bac", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_1.html", "title": "Bac : fonction dérivée", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_2.html", "title": "Bac : suite et Python", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_3.html", "title": "Bac : probabilités", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
+        // COEFFICIENTS
+        { "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STI2D.html", "title": "Coefficients Bac STI2D", "category": "Coefficients", "subcategory": "Examens", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STL.html", "title": "Coefficients Bac STL", "category": "Coefficients", "subcategory": "Examens", "classes": "1ère" },
+        // ENSEIGNEMENTS SCIENTIFIQUES
+        { "url": "https://ldv78100ym-hub.github.io/ENSEIGNEMENT-SCIENTIFIQUE-/PROJETS/index.html", "title": "Projets fin d'année", "category": "Enseignements Scientifiques", "subcategory": "Présentation", "classes": "1G" },
+        // PBL RED BULL
+        { "url": "RED_BULL_SKY_AND_DIRT_CHALLENGE_V2.pdf", "title": "📄 L'ÉNONCÉ (PDF)", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
+        { "url": "DOSSIER_SYNTHESE_MAQUETTE.pdf", "title": "Dossier synthèse maquette", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
+        { "url": "CRITERES_EVALUATION_PROFS.pdf", "title": "Critères évaluation profs", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
+        { "url": "COMMUNICATION_PREPARATOIRE_VERS_ELEVES_ET_ENSEIGNANTS.pdf", "title": "Communication préparatoire", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
+        { "url": "DOSSIER_SYNTHESE_SOUS_GROUPE_MAQUETTE.pdf", "title": "Dossier synthèse sous-groupe", "category": "PBL Challenge", "subcategory": "Énoncé", "classes": "PBL" },
+        { "url": "TRIGONOMETRIE_TABLEAU_BILAN.pdf", "title": "Trigonométrie tableau bilan", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
+        { "url": "PYTHON_V2.pdf", "title": "Python V2", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
+        { "url": "LIAISONS_PARTIES.pdf", "title": "Liaisons parties", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
+        { "url": "LIAISONS_DOCUMENTS.pdf", "title": "Liaisons documents", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
+        { "url": "FICHE_SYNTHESE.pdf", "title": "Fiche synthèse", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
+        { "url": "DOSSIER_SYNTHESE_PYTHON.pdf", "title": "Dossier synthèse Python", "category": "PBL Challenge", "subcategory": "Annexes", "classes": "PBL" },
+        // Cartes Joker (PBL)
+        { "url": "CARTES_JOKER_DERIVATION.pdf", "title": "Cartes Joker Dérivation", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        { "url": "CARTES_JOKER_DERIVEES_PCM.pdf", "title": "Cartes Joker Dérivées PCM", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        { "url": "CARTES_JOKER_FONCTIONS.pdf", "title": "Cartes Joker Fonctions", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        { "url": "CARTES_JOKER_PRODUIT_SCALAIRE.pdf", "title": "Cartes Joker Produit Scalaire", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        { "url": "CARTES_JOKER_SECOND_DEGRE.pdf", "title": "Cartes Joker Second Degré", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        { "url": "CARTES_JOKER_STATISTIQUES_PROBABILITES.pdf", "title": "Cartes Joker Stats/Probas", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        { "url": "CARTES_JOKER_SUITES.pdf", "title": "Cartes Joker Suites", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        { "url": "CARTES_JOKER_TRIGONOMETRIE.pdf", "title": "Cartes Joker Trigonométrie", "category": "PBL Challenge", "subcategory": "Cartes Joker", "classes": "PBL" },
+        // Duplication Flashcards (Cartes Joker)
+        { "url": "CARTES_JOKER_DERIVATION.pdf", "title": "🃏 Dérivation (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+        { "url": "CARTES_JOKER_DERIVEES_PCM.pdf", "title": "🃏 Dérivées PCM (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+        { "url": "CARTES_JOKER_FONCTIONS.pdf", "title": "🃏 Fonctions (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+        { "url": "CARTES_JOKER_PRODUIT_SCALAIRE.pdf", "title": "🃏 Produit Scalaire (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+        { "url": "CARTES_JOKER_SECOND_DEGRE.pdf", "title": "🃏 Second Degré (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+        { "url": "CARTES_JOKER_STATISTIQUES_PROBABILITES.pdf", "title": "🃏 Stats/Probas (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+        { "url": "CARTES_JOKER_SUITES.pdf", "title": "🃏 Suites (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+        { "url": "CARTES_JOKER_TRIGONOMETRIE.pdf", "title": "🃏 Trigonométrie (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+    ];
 
     const categoryConfig = [
         "Automatismes", "Algèbre", "Analyse", "Géométrie", "Probabilités", "Variables Aléatoires", 
         "Maths Expertes", "CPGE", "Flashcards", "Jeux", "Prépa Bac", "Coefficients", "Enseignements Scientifiques",
-        "PBL Challenge"   // nouvelle catégorie
+        "PBL Challenge"
     ];
 
-    // ---------- SETUP THREE.JS (fond plus clair) ----------
+    // ---------- SETUP THREE.JS ----------
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x142c3c);
     
