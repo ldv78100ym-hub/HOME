@@ -208,6 +208,57 @@
         body.vision-mode { filter: contrast(1.6) brightness(1.2); }
         body.vision-mode .ctrl-btn { background: black; border-color: yellow; color: yellow; }
 
+        /* Styles pour le popup de mise à jour */
+        #maj-trigger {
+            cursor: help;
+            border-bottom: 1px dashed #7ae4ff;
+            pointer-events: auto;
+            transition: color 0.3s;
+        }
+        #maj-trigger:hover {
+            color: #7ae4ff;
+        }
+        #maj-popup {
+            display: none;
+            position: absolute;
+            z-index: 300;
+            background: rgba(15, 30, 50, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid #7ae4ff;
+            border-radius: 18px;
+            padding: 20px;
+            color: #e6f7ff;
+            box-shadow: 0 0 35px rgba(100, 220, 255, 0.5);
+            min-width: 280px;
+            max-width: 380px;
+            pointer-events: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        #maj-popup h3 {
+            margin: 0 0 12px 0;
+            color: #7ae4ff;
+            font-size: 1rem;
+            border-bottom: 1px solid #7ae4ff44;
+            padding-bottom: 6px;
+        }
+        #maj-popup ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #maj-popup li {
+            margin-bottom: 8px;
+            padding-left: 12px;
+            position: relative;
+        }
+        #maj-popup li::before {
+            content: "•";
+            color: #7ae4ff;
+            position: absolute;
+            left: 0;
+        }
+
         /* Responsive */
         @media screen and (max-width: 768px) {
             #info { top: 12px; left: 12px; padding: 8px 16px; font-size: 14px; }
@@ -230,10 +281,26 @@
 
 <div id="info">
     <i class="fas fa-cube" style="color:#7ae4ff; margin-right:10px;"></i> 
-    <span>Constellation Mathématique • Yann Merdy<br><span style="color: rgba(20, 40, 60, 0.5);">MMMMMM</span>(M.À.J : 24/04/2026)</span>
+    <span>Constellation Mathématique • Yann Merdy<br><span style="color: rgba(20, 40, 60, 0.5);">MMMMMM</span><span id="maj-trigger">(M.À.J : 24/04/2026)</span></span>
 </div>
 <div id="level-indicator">
     <i class="fas fa-satellite"></i> Niveau : <span id="level-text">Catégories</span>
+</div>
+
+<!-- Popup historique des mises à jour -->
+<div id="maj-popup">
+    <h3>📅 Historique des mises à jour</h3>
+    <ul>
+        <li><strong>24/04/2026</strong> – Ajout des ressources PBL Challenge (énoncés, annexes, cartes Joker)</li>
+	<li><strong>24/04/2026</strong> – Enrichissement de la navigation.</li>
+	<li><strong>24/04/2026</strong> – Intégration du programme à réviser pour le baccalauréat.</li>
+	<li><strong>24/04/2026</strong> – Intégration d'un nouveau sujet type baccalauréat dynamique.</li>
+	<li><strong>19/04/2026</strong> – Actualisation des QCM.</li>
+        <li><strong>10/03/2026</strong> – Intégration des Flashcards Cartes Joker et des sections Prépa Bac.</li>
+        <li><strong>05/02/2026</strong> – Nouvelles catégories Jeux (produit scalaire, labyrinthe auditif) et Enseignements Scientifiques.</li>
+        <li><strong>20/01/2026</strong> – Ouverture des univers Maths Expertes, CPGE et Probabilités.</li>
+        <li><strong>15/12/2025</strong> – Lancement officiel de la Constellation Mathématique.</li>
+    </ul>
 </div>
 
 <div id="controls">
@@ -289,7 +356,7 @@
         { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_CALCUL_NUMERIQUE_ET_ALGEBRIQUE_3.html", "title": "Tableaux de signes", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
         { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_EVOLUTIONS_ET_VARIARIONS.html", "title": "QCM Évolutions", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
         { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_PROPORTIONS_ET_POURCENTAGES.html", "title": "QCM Proportions", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
-	{ "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_LECTURE_GRAPHIQUES_ET_TABLEAUX.html", "title": "QCM Graphiques et Tableaux", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
+        { "url": "https://ldv78100ym-hub.github.io/AUTOMATISMES/QCM_LECTURE_GRAPHIQUES_ET_TABLEAUX.html", "title": "QCM Graphiques et Tableaux", "category": "Automatismes", "subcategory": "QCM", "classes": "Toutes" },
         // ALGEBRE
         { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/CALCULS.html", "title": "Calculs (Algèbre)", "category": "Algèbre", "subcategory": "Calcul Littéral", "classes": "1ère STL/STI2D" },
         { "url": "https://ldv78100ym-hub.github.io/ALGEBRE_DIVERS/EVOLUTIONS.html", "title": "Évolutions", "category": "Algèbre", "subcategory": "Outils", "classes": "1ère" },
@@ -367,16 +434,16 @@
         // JEUX
         { "url": "https://ldv78100ym-hub.github.io/SECOND_DEGRE/index_jeux.html", "title": "Jeux mathématiques", "category": "Jeux", "subcategory": "Maths Ludique", "classes": "Tous" },
         { "url": "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html", "title": "Quête produit scalaire", "category": "Jeux", "subcategory": "Maths Ludique", "classes": "1ère" },
-	{ "url": "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PBL_SON_LABYRINTHES.html", "title": "Sortir d'un labyrinthe à l'oreille", "category": "Jeux", "subcategory": "Echolocation et labyrinthes", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PBL_SON_LABYRINTHES.html", "title": "Sortir d'un labyrinthe à l'oreille", "category": "Jeux", "subcategory": "Echolocation et labyrinthes", "classes": "1ère" },
 
         // PREPA BAC
         { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/BAC_BLANC_TECHNO_01.html", "title": "Sujet type Bac 1", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
-	{ "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/BAC_BLANC_TECHNO_02.html", "title": "Sujet type Bac 2", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/BAC_BLANC_TECHNO_02.html", "title": "Sujet type Bac 2", "category": "Prépa Bac", "subcategory": "Sujets", "classes": "1ère" },
         { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/QCM.html", "title": "QCM type Bac", "category": "Prépa Bac", "subcategory": "QCM", "classes": "1ère" },
         { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_1.html", "title": "Bac : fonction dérivée", "category": "Prépa Bac", "subcategory": "Fonctions", "classes": "1ère" },
         { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_2.html", "title": "Bac : suite et Python", "category": "Prépa Bac", "subcategory": "Suites", "classes": "1ère" },
         { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/EXERCICE_3.html", "title": "Bac : probabilités", "category": "Prépa Bac", "subcategory": "Probabilités", "classes": "1ère" },
-	{ "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/CONTENU_EPREUVE_ANTICIPEE.html", "title": "Épreuv Anticipée de Mathématiques", "category": "Prépa Bac",  "subcategory": "Programme", "classes": "1ère" },
+        { "url": "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/CONTENU_EPREUVE_ANTICIPEE.html", "title": "Épreuv Anticipée de Mathématiques", "category": "Prépa Bac",  "subcategory": "Programme", "classes": "1ère" },
         // COEFFICIENTS
         { "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STI2D.html", "title": "Coefficients Bac STI2D", "category": "Coefficients", "subcategory": "Examens", "classes": "1ère" },
         { "url": "https://ldv78100ym-hub.github.io/HOME/COEFFICIENTS_BAC_STL.html", "title": "Coefficients Bac STL", "category": "Coefficients", "subcategory": "Examens", "classes": "1ère" },
@@ -643,6 +710,37 @@
     window.toggleVisionMode = () => document.body.classList.toggle('vision-mode');
     window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
     window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+
+    // Gestion du popup de mise à jour
+    const trigger = document.getElementById('maj-trigger');
+    const popup = document.getElementById('maj-popup');
+    let hideTimeout;
+
+    function positionPopup() {
+        const rect = trigger.getBoundingClientRect();
+        popup.style.left = rect.left + 'px';
+        popup.style.top = (rect.bottom + 12) + 'px';
+    }
+
+    function showPopup() {
+        clearTimeout(hideTimeout);
+        positionPopup();
+        popup.style.display = 'block';
+    }
+
+    function hidePopup() {
+        // Petit délai pour permettre à la souris d'aller sur le popup
+        hideTimeout = setTimeout(() => {
+            popup.style.display = 'none';
+        }, 200);
+    }
+
+    if (trigger && popup) {
+        trigger.addEventListener('mouseenter', showPopup);
+        trigger.addEventListener('mouseleave', hidePopup);
+        popup.addEventListener('mouseenter', showPopup);
+        popup.addEventListener('mouseleave', hidePopup);
+    }
 
     // Écouteurs tactiles pour les croix de fermeture
     document.addEventListener('DOMContentLoaded', () => {
