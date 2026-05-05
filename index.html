@@ -208,7 +208,7 @@
         body.vision-mode { filter: contrast(1.6) brightness(1.2); }
         body.vision-mode .ctrl-btn { background: black; border-color: yellow; color: yellow; }
 
-        /* Styles pour le popup de mise à jour */
+        /* Styles pour le popup de mise à jour & Slider */
         #maj-trigger {
             cursor: help;
             border-bottom: 1px dashed #7ae4ff;
@@ -229,18 +229,67 @@
             padding: 20px;
             color: #e6f7ff;
             box-shadow: 0 0 35px rgba(100, 220, 255, 0.5);
-            min-width: 280px;
-            max-width: 380px;
+            min-width: 320px;
+            max-width: 420px;
             pointer-events: auto;
             font-size: 0.9rem;
             line-height: 1.5;
         }
-        #maj-popup h3 {
-            margin: 0 0 12px 0;
+        .maj-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #7ae4ff44;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .maj-header-top h3 {
+            margin: 0;
             color: #7ae4ff;
             font-size: 1rem;
-            border-bottom: 1px solid #7ae4ff44;
-            padding-bottom: 6px;
+        }
+        #maj-slider-container {
+            position: relative;
+            min-height: 140px;
+        }
+        .maj-slide {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .maj-slide.active {
+            display: block;
+        }
+        .maj-slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+        .maj-slide-date {
+            font-weight: bold;
+            color: #ffb0c3;
+            font-size: 1.05rem;
+        }
+        .maj-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .maj-btn {
+            background: #102a3c;
+            border: 1px solid #7ae4ff;
+            color: #7ae4ff;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .maj-btn:hover {
+            background: #7ae4ff;
+            color: #0a1e2c;
         }
         #maj-popup ul {
             list-style: none;
@@ -248,7 +297,7 @@
             margin: 0;
         }
         #maj-popup li {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             padding-left: 12px;
             position: relative;
         }
@@ -257,6 +306,30 @@
             color: #7ae4ff;
             position: absolute;
             left: 0;
+            top: 0;
+        }
+        .maj-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(122, 228, 255, 0.15);
+            color: #7ae4ff;
+            border: 1px solid #7ae4ff;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            transition: 0.2s;
+        }
+        .maj-link-btn:hover {
+            background: #7ae4ff;
+            color: #0a1e2c;
+            box-shadow: 0 0 10px #7ae4ff;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         /* Responsive */
@@ -287,28 +360,15 @@
     <i class="fas fa-satellite"></i> Niveau : <span id="level-text">Catégories</span>
 </div>
 
-<!-- Popup historique des mises à jour -->
+<!-- Popup historique des mises à jour (Structure Slider Dynamique) -->
 <div id="maj-popup">
-    <h3>📅 Historique des mises à jour</h3>
-    <ul>
-		<li><strong>05/05/2026</strong> – Intégration d'une nouvelle fiche HTML sur les nombres complexes (Forme trigonométrique) .</li>
-		<li><strong>05/05/2026</strong> – Intégration d'une nouvelle fiche HTML sur les variables aléatoires (QVM, Problèmes) .</li>
-		<li><strong>05/05/2026</strong> – Intégration d'un nouveau exercice dynamique (Primitives et variations, Calculs, Développement, Probabilité,Variables Aléatoires).</li>
-		<li><strong>05/05/2026</strong> – Intégration d'un nouveau exercice dynamique type Automatismes (Variations, ).</li>
-		<li><strong>27/04/2026</strong> – Intégration d'un nouveau sujet type baccalauréat dynamique (Fréquences, fréquences conditionnelles et intervalle de confiance).</li>
-		<li><strong>27/04/2026</strong> – Intégration d'un nouveau sujet type baccalauréat dynamique (Loi de probabilités et Variables aléatoires).</li>
-		<li><strong>24/04/2026</strong> – Intégration d'un nouveau sujet type baccalauréat dynamique.</li>
-        <li><strong>24/04/2026</strong> – Ajout des ressources PBL Challenge (énoncés, annexes, cartes Joker)</li>
-	    <li><strong>24/04/2026</strong> – Enrichissement de la navigation.</li>
-	    <li><strong>24/04/2026</strong> – Intégration du programme à réviser pour le baccalauréat.</li>
-	    <li><strong>23/04/2026</strong> – Intégration d'un nouveau sujet type baccalauréat dynamique.</li>
-	    <li><strong>23/04/2026</strong> – Nouveau Jeux : Labyrinthe et écholocation.<br><i>Sensibilisation à la situation des mal ou non voyants.es</i></li>
-	    <li><strong>19/04/2026</strong> – Actualisation des QCM.</li>
-        <li><strong>10/03/2026</strong> – Intégration des Flashcards Cartes Joker et des sections Prépa Bac.</li>
-        <li><strong>05/02/2026</strong> – Nouvelles catégories Jeux (produit scalaire) et Enseignements Scientifiques.</li>
-        <li><strong>20/01/2026</strong> – Ouverture des univers Maths Expertes, CPGE et Probabilités.</li>
-        <li><strong>15/12/2025</strong> – Lancement officiel de la Constellation Mathématique.</li>
-    </ul>
+    <div class="maj-header-top">
+        <h3>📅 Historique des mises à jour</h3>
+        <span id="maj-slide-indicator" style="font-size: 0.8rem; color: #88aadd; font-weight: bold;">1 / X</span>
+    </div>
+    <div id="maj-slider-container">
+        <!-- Les diapositives seront injectées ici par JavaScript -->
+    </div>
 </div>
 
 <div id="controls">
@@ -338,7 +398,7 @@
     <div class="modal-box">
         <button class="modal-close" id="closeCopyrightBtn"><i class="fas fa-times"></i></button>
         <h2 style="margin-top:0;">⚖️ Droits d'Auteur et Licence d'Utilisation</h2>
-        <p><strong>Auteur :</strong> Yann Merdy (yann.merdy@gmail.com) - Avril 2026</p>
+        <p><strong>Auteur :</strong> Yann Merdy (yann.merdy@gmail.com) - Mai 2026</p>
         <p><strong>Licence d'Utilisation Non Commerciale</strong></p>
         <p>Ce code HTML/CSS/JavaScript ainsi que le contenu généré par l'application ('Portail Éducatif Mathématiques') sont la propriété intellectuelle exclusive de l'auteur, Yann Merdy.</p>
         <p><strong>Conditions :</strong></p>
@@ -496,6 +556,74 @@
         { "url": "https://ldv78100ym-hub.github.io/PBL/CARTES_JOKER_STATISTIQUES_PROBABILITES.pdf", "title": "🃏 Stats/Probas (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
         { "url": "https://ldv78100ym-hub.github.io/PBL/CARTES_JOKER_SUITES.pdf", "title": "🃏 Suites (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
         { "url": "https://ldv78100ym-hub.github.io/PBL/CARTES_JOKER_TRIGONOMETRIE.pdf", "title": "🃏 Trigonométrie (Joker)", "category": "Flashcards", "subcategory": "Cartes Joker", "classes": "1ère/Term" },
+    ];
+
+    // ---------- HISTORIQUE DYNAMIQUE DES MISES À JOUR ----------
+    // Vous pouvez désormais ajouter/modifier vos mises à jour directement dans ce tableau.
+    // L'interface du slider s'adaptera automatiquement.
+    const updatesHistory = [
+        {
+            date: "05/05/2026",
+            items: [
+                { text: "Intégration d'une nouvelle fiche HTML sur les nombres complexes (Forme trigonométrique).", url: "https://ldv78100ym-hub.github.io/NOMBRES_COMPLEXES/NOMBRE_COMPLEXES_TRIGONOMETRIE.html" },
+                { text: "Intégration d'une nouvelle fiche HTML sur les variables aléatoires (QVM, Problèmes).", url: "https://ldv78100ym-hub.github.io/VARIABLES-ALEATOIRES/VARIABLES_ALEATOIRES.html" },
+                { text: "Intégration d'un nouveau exercice dynamique (Primitives et variations, Calculs, Développement, Probabilité, Variables Aléatoires).", url: "https://ldv78100ym-hub.github.io/AUTOMATISMES/TEST_04_MAI_2026.html" },
+                { text: "Intégration d'un nouveau exercice dynamique type Automatismes (Variations).", url: "https://ldv78100ym-hub.github.io/AUTOMATISMES/TEST_04_MAI_2026.html" }
+            ]
+        },
+        {
+            date: "27/04/2026",
+            items: [
+                { text: "Intégration d'un nouveau sujet type baccalauréat dynamique (Fréquences, fréquences conditionnelles et intervalle de confiance).", url: "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/STATISTIQUES_FREQUENCES.html" },
+                { text: "Intégration d'un nouveau sujet type baccalauréat dynamique (Loi de probabilités et Variables aléatoires).", url: "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/PROBABILITES_ET_VARIABLES_ALEATOIRES.html" }
+            ]
+        },
+        {
+            date: "24/04/2026",
+            items: [
+                { text: "Intégration d'un nouveau sujet type baccalauréat dynamique.", url: "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/BAC_BLANC_TECHNO_01.html" },
+                { text: "Ajout des ressources PBL Challenge (énoncés, annexes, cartes Joker).", url: "https://ldv78100ym-hub.github.io/PBL/RED_BULL_SKY_AND_DIRT_CHALLENGE_V2.pdf" },
+                { text: "Enrichissement de la navigation.", url: null },
+                { text: "Intégration du programme à réviser pour le baccalauréat.", url: "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/CONTENU_EPREUVE_ANTICIPEE.html" }
+            ]
+        },
+        {
+            date: "23/04/2026",
+            items: [
+                { text: "Intégration d'un nouveau sujet type baccalauréat dynamique.", url: "https://ldv78100ym-hub.github.io/EPREUVES_TYPE_BAC/BAC_BLANC_TECHNO_02.html" },
+                { text: "Nouveau Jeux : Labyrinthe et écholocation.<br><i>Sensibilisation à la situation des mal ou non voyants.es</i>", url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PBL_SON_LABYRINTHES.html" }
+            ]
+        },
+        {
+            date: "19/04/2026",
+            items: [
+                { text: "Actualisation des QCM.", url: null }
+            ]
+        },
+        {
+            date: "10/03/2026",
+            items: [
+                { text: "Intégration des Flashcards Cartes Joker et des sections Prépa Bac.", url: "https://ldv78100ym-hub.github.io/FLASHCARDS/TRIGOMASTER.html" }
+            ]
+        },
+        {
+            date: "05/02/2026",
+            items: [
+                { text: "Nouvelles catégories Jeux (produit scalaire) et Enseignements Scientifiques.", url: "https://ldv78100ym-hub.github.io/JEUX-MATH-MATIQUES-/PRODUIT_SCALAIRE_JEUX.html" }
+            ]
+        },
+        {
+            date: "20/01/2026",
+            items: [
+                { text: "Ouverture des univers Maths Expertes, CPGE et Probabilités.", url: null }
+            ]
+        },
+        {
+            date: "15/12/2025",
+            items: [
+                { text: "Lancement officiel de la Constellation Mathématique.", url: null }
+            ]
+        }
     ];
 
     const categoryConfig = [
@@ -728,7 +856,89 @@
     window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
     window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
 
-    // Gestion du popup de mise à jour
+    // === GESTION DU SLIDER DE MISES À JOUR ===
+    let currentSlideIndex = 0;
+
+    function renderMajSlider() {
+        const container = document.getElementById('maj-slider-container');
+        container.innerHTML = '';
+        
+        updatesHistory.forEach((update, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'maj-slide' + (index === 0 ? ' active' : '');
+            
+            const header = document.createElement('div');
+            header.className = 'maj-slide-header';
+            
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'maj-slide-date';
+            dateSpan.textContent = update.date;
+            
+            const controlsDiv = document.createElement('div');
+            controlsDiv.className = 'maj-controls';
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'maj-btn';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = () => window.changeSlide(-1);
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'maj-btn';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = () => window.changeSlide(1);
+            
+            controlsDiv.appendChild(prevBtn);
+            controlsDiv.appendChild(nextBtn);
+            
+            header.appendChild(dateSpan);
+            header.appendChild(controlsDiv);
+            slide.appendChild(header);
+            
+            const ul = document.createElement('ul');
+            update.items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${update.date}</strong> - ${item.text}`;
+                
+                // Créer le bouton d'accès direct si une URL existe
+                if (item.url) {
+                    const lineBreak = document.createElement('br');
+                    const linkBtn = document.createElement('a');
+                    linkBtn.href = item.url;
+                    linkBtn.target = "_blank";
+                    linkBtn.className = "maj-link-btn";
+                    linkBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Ouvrir le document';
+                    
+                    li.appendChild(lineBreak);
+                    li.appendChild(linkBtn);
+                }
+                ul.appendChild(li);
+            });
+            
+            slide.appendChild(ul);
+            container.appendChild(slide);
+        });
+        updateIndicator();
+    }
+
+    window.changeSlide = function(direction) {
+        const slides = document.querySelectorAll('.maj-slide');
+        if (slides.length === 0) return;
+        
+        slides[currentSlideIndex].classList.remove('active');
+        currentSlideIndex = (currentSlideIndex + direction + slides.length) % slides.length;
+        slides[currentSlideIndex].classList.add('active');
+        
+        updateIndicator();
+    };
+
+    function updateIndicator() {
+        const indicator = document.getElementById('maj-slide-indicator');
+        if (indicator && updatesHistory.length > 0) {
+            indicator.textContent = `${currentSlideIndex + 1} / ${updatesHistory.length}`;
+        }
+    }
+
+    // Gestion du popup au survol
     const trigger = document.getElementById('maj-trigger');
     const popup = document.getElementById('maj-popup');
     let hideTimeout;
@@ -746,10 +956,9 @@
     }
 
     function hidePopup() {
-        // Petit délai pour permettre à la souris d'aller sur le popup
         hideTimeout = setTimeout(() => {
             popup.style.display = 'none';
-        }, 200);
+        }, 300); // Délai un peu plus long pour interagir sereinement avec le slider
     }
 
     if (trigger && popup) {
@@ -761,6 +970,8 @@
 
     // Écouteurs tactiles pour les croix de fermeture
     document.addEventListener('DOMContentLoaded', () => {
+        renderMajSlider(); // Initialiser le slider à l'ouverture de la page
+        
         const closePromo = document.getElementById('closePromoBtn');
         if (closePromo) {
             closePromo.addEventListener('click', (e) => { e.stopPropagation(); window.closeModal('promoOverlay'); });
